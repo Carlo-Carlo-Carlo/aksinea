@@ -24,9 +24,7 @@ export function DossierTabs({
   mouvements,
   cessions,
 }: DossierTabsProps) {
-  const [activeTab, setActiveTab] = useState
-    "portefeuille" | "mouvements" | "cessions"
-  >("portefeuille");
+  const [activeTab, setActiveTab] = useState("portefeuille");
 
   const tabs = [
     {
