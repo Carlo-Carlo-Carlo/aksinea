@@ -1,6 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
-import { FolderOpen, Plus, TrendingUp, TrendingDown } from "lucide-react";
+import { FolderOpen, Plus, BarChart3, ArrowUpDown } from "lucide-react";
 
 export default async function DashboardPage() {
   const supabase = createClient();
@@ -16,6 +16,31 @@ export default async function DashboardPage() {
     .order("created_at", { ascending: false });
 
   const nbDossiers = dossiers?.length || 0;
+
+  // Compter les titres suivis (tous dossiers)
+  const dossierIds = (dossiers || []).map((d) => d.id);
+  let nbTitres = 0;
+  let nbMouvementsMois = 0;
+
+  if (dossierIds.length > 0) {
+    const { count: titresCount } = await supabase
+      .from("titres")
+      .select("id", { count: "exact", head: true })
+      .in("dossier_id", dossierIds);
+
+    nbTitres = titresCount || 0;
+
+    // Mouvements ce mois-ci
+    const now = new Date();
+    const debutMois = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-01`;
+    const { count: mvtCount } = await supabase
+      .from("mouvements")
+      .select("id", { count: "exact", head: true })
+      .in("dossier_id", dossierIds)
+      .gte("created_at", debutMois);
+
+    nbMouvementsMois = mvtCount || 0;
+  }
 
   return (
     <div>
@@ -52,24 +77,24 @@ export default async function DashboardPage() {
 
         <div className="bg-white rounded-xl border border-gray-200 p-6">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-              <TrendingUp className="w-5 h-5 text-green-600" />
+            <div className="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center">
+              <BarChart3 className="w-5 h-5 text-amber-600" />
             </div>
             <div>
-              <p className="text-sm text-gray-500">Plus-values (exercice)</p>
-              <p className="text-2xl font-bold text-gray-900">—</p>
+              <p className="text-sm text-gray-500">Titres suivis</p>
+              <p className="text-2xl font-bold text-gray-900">{nbTitres}</p>
             </div>
           </div>
         </div>
 
         <div className="bg-white rounded-xl border border-gray-200 p-6">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
-              <TrendingDown className="w-5 h-5 text-red-600" />
+            <div className="w-10 h-10 bg-violet-100 rounded-lg flex items-center justify-center">
+              <ArrowUpDown className="w-5 h-5 text-violet-600" />
             </div>
             <div>
-              <p className="text-sm text-gray-500">Moins-values (exercice)</p>
-              <p className="text-2xl font-bold text-gray-900">—</p>
+              <p className="text-sm text-gray-500">Mouvements ce mois</p>
+              <p className="text-2xl font-bold text-gray-900">{nbMouvementsMois}</p>
             </div>
           </div>
         </div>
