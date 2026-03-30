@@ -188,11 +188,32 @@ function MouvementsTab({
   mouvements,
   formatCurrency,
   formatNumber,
+  dossierId,
 }: {
   mouvements: any[];
   formatCurrency: (n: number) => string;
   formatNumber: (n: number) => string;
+  dossierId: string;
 }) {
+  const [deleting, setDeleting] = useState<string | null>(null);
+
+  const handleDelete = async (id: string) => {
+    if (!confirm("Supprimer ce mouvement ? Le calcul FIFO sera recalculé automatiquement.")) return;
+    setDeleting(id);
+    try {
+      const res = await fetch("/api/mouvements/" + id, { method: "DELETE" });
+      if (res.ok) {
+        window.location.reload();
+      } else {
+        const data = await res.json();
+        alert(data.error || "Erreur lors de la suppression");
+      }
+    } catch {
+      alert("Erreur réseau");
+    }
+    setDeleting(null);
+  };
+
   if (mouvements.length === 0) {
     return (
       <div className="bg-white rounded-xl border border-gray-200 p-12 text-center">
@@ -216,6 +237,7 @@ function MouvementsTab({
             <th className="text-right px-6 py-3 text-xs font-semibold text-gray-500 uppercase">Prix unitaire</th>
             <th className="text-right px-6 py-3 text-xs font-semibold text-gray-500 uppercase">Frais</th>
             <th className="text-right px-6 py-3 text-xs font-semibold text-gray-500 uppercase">Total</th>
+            <th className="px-4 py-3"></th>
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-100">
@@ -236,6 +258,16 @@ function MouvementsTab({
               <td className="px-6 py-4 text-right font-mono text-sm">{formatCurrency(mvt.prix_unitaire)}</td>
               <td className="px-6 py-4 text-right font-mono text-sm text-gray-500">{formatCurrency(mvt.frais)}</td>
               <td className="px-6 py-4 text-right font-mono text-sm font-medium">{formatCurrency(mvt.montant_total)}</td>
+              <td className="px-4 py-4">
+                <button
+                  onClick={() => handleDelete(mvt.id)}
+                  disabled={deleting === mvt.id}
+                  className="text-gray-400 hover:text-red-600 transition-colors disabled:opacity-50"
+                  title="Supprimer ce mouvement"
+                >
+                  {deleting === mvt.id ? "..." : "✕"}
+                </button>
+              </td>
             </tr>
           ))}
         </tbody>
