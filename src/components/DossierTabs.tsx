@@ -105,14 +105,15 @@ export function DossierTabs({
             <Upload className="w-4 h-4" />
             Importer
           </Link>
-          
-            href={`/api/export-ecritures?dossier_id=${dossierId}&exercice=${new Date().getFullYear()}`}
-            download
+          <button
+            onClick={() => {
+              window.location.href = "/api/export-ecritures?dossier_id=" + dossierId + "&exercice=" + new Date().getFullYear();
+            }}
             className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-gray-600 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
           >
             <Download className="w-4 h-4" />
             Écritures
-          </a>
+          </button>
         </div>
 
       {/* Tab content */}
