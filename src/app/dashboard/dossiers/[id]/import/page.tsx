@@ -385,6 +385,25 @@ export default function ImportPage() {
         }
 
         // Appeler l'API FIFO
+        // Vérification doublon
+        const { data: existing } = await supabase
+          .from("mouvements")
+          .select("id")
+          .eq("dossier_id", dossierId)
+          .eq("titre_id", titreId)
+          .eq("date", row.date)
+          .eq("type", row.type)
+          .eq("quantite", row.quantite)
+          .eq("prix_unitaire", row.prix_unitaire)
+          .maybeSingle();
+
+        if (existing) {
+          errors++;
+          details.push(
+            `Ligne ${i + 1} (${row.titre}, ${row.date}): Doublon détecté, ignoré`
+          );
+          continue;
+        }
         const response = await fetch("/api/mouvements", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
