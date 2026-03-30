@@ -104,15 +104,34 @@ export function DossierTabs({
             <Upload className="w-4 h-4" />
             Importer
           </Link>
-          <button
-            onClick={() => {
-              window.location.href = "/api/export-ecritures?dossier_id=" + dossierId + "&exercice=" + new Date().getFullYear();
-            }}
-            className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-gray-600 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
-          >
-            <Download className="w-4 h-4" />
-            Écritures
-          </button>
+          <div className="flex items-center gap-1 border border-gray-200 rounded-lg overflow-hidden">
+            <select
+              id="exercice-select"
+              defaultValue={new Date().getFullYear()}
+              className="px-2 py-2 text-sm text-gray-600 bg-white border-none outline-none cursor-pointer"
+            >
+              {[...Array(5)].map((_, i) => {
+                const year = new Date().getFullYear() - i;
+                return (
+                  <option key={year} value={year}>
+                    {year}
+                  </option>
+                );
+              })}
+              <option value="all">Tous</option>
+            </select>
+            <button
+              onClick={() => {
+                const sel = document.getElementById("exercice-select") as HTMLSelectElement;
+                const val = sel.value;
+                window.location.href = "/api/export-ecritures?dossier_id=" + dossierId + "&exercice=" + val;
+              }}
+              className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors border-l border-gray-200"
+            >
+              <Download className="w-4 h-4" />
+              Écritures
+            </button>
+          </div>
         </div>
       </div>
 
