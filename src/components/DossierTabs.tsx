@@ -120,7 +120,7 @@ export function DossierTabs({
         <PortefeuilleTab portefeuille={portefeuille} formatCurrency={formatCurrency} formatNumber={formatNumber} />
       )}
       {activeTab === "mouvements" && (
-        <MouvementsTab mouvements={mouvements} formatCurrency={formatCurrency} formatNumber={formatNumber} />
+        <MouvementsTab mouvements={mouvements} formatCurrency={formatCurrency} formatNumber={formatNumber} dossierId={dossierId} />
       )}
       {activeTab === "cessions" && (
         <CessionsTab cessions={cessions} formatCurrency={formatCurrency} formatNumber={formatNumber} />
