@@ -71,11 +71,12 @@ export default function Home() {
               <ArrowRight className="w-4 h-4" />
             </Link>
             
-              href="#features"
+              <button
+              onClick={() => document.getElementById("features")?.scrollIntoView({ behavior: "smooth" })}
               className="px-8 py-3.5 border border-white/30 text-white font-semibold rounded-lg hover:bg-white/10 transition-colors"
             >
               Découvrir
-            </a>
+            </button>
           </div>
           <p className="text-sm text-primary-200 mt-4">
             Sans carte bancaire • Configuration en 2 minutes
