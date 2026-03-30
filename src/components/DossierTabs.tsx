@@ -28,19 +28,19 @@ export function DossierTabs({
 
   const tabs = [
     {
-      id: "portefeuille" as const,
+      id: "portefeuille",
       label: "Portefeuille",
       icon: Briefcase,
       count: portefeuille.length,
     },
     {
-      id: "mouvements" as const,
+      id: "mouvements",
       label: "Mouvements",
       icon: ArrowUpDown,
       count: mouvements.length,
     },
     {
-      id: "cessions" as const,
+      id: "cessions",
       label: "Cessions",
       icon: Receipt,
       count: cessions.length,
@@ -61,7 +61,6 @@ export function DossierTabs({
 
   return (
     <div>
-      {/* Tab bar */}
       <div className="flex items-center justify-between border-b border-gray-200 mb-6">
         <div className="flex gap-0">
           {tabs.map((tab) => (
@@ -115,8 +114,8 @@ export function DossierTabs({
             Écritures
           </button>
         </div>
+      </div>
 
-      {/* Tab content */}
       {activeTab === "portefeuille" && (
         <PortefeuilleTab portefeuille={portefeuille} formatCurrency={formatCurrency} formatNumber={formatNumber} />
       )}
@@ -144,8 +143,7 @@ function PortefeuilleTab({
       <div className="bg-white rounded-xl border border-gray-200 p-12 text-center">
         <Briefcase className="w-10 h-10 text-gray-300 mx-auto mb-3" />
         <p className="text-gray-500">
-          Aucun titre en portefeuille. Ajoutez un mouvement d&apos;achat pour
-          commencer.
+          Aucun titre en portefeuille. Ajoutez un mouvement d&apos;achat pour commencer.
         </p>
       </div>
     );
@@ -156,52 +154,28 @@ function PortefeuilleTab({
       <table className="w-full">
         <thead>
           <tr className="bg-gray-50 border-b border-gray-200">
-            <th className="text-left px-6 py-3 text-xs font-semibold text-gray-500 uppercase">
-              Titre
-            </th>
-            <th className="text-left px-6 py-3 text-xs font-semibold text-gray-500 uppercase">
-              Type
-            </th>
-            <th className="text-right px-6 py-3 text-xs font-semibold text-gray-500 uppercase">
-              Quantité
-            </th>
-            <th className="text-right px-6 py-3 text-xs font-semibold text-gray-500 uppercase">
-              PRU FIFO
-            </th>
-            <th className="text-right px-6 py-3 text-xs font-semibold text-gray-500 uppercase">
-              Valeur d&apos;acquisition
-            </th>
-            <th className="text-right px-6 py-3 text-xs font-semibold text-gray-500 uppercase">
-              Compte
-            </th>
+            <th className="text-left px-6 py-3 text-xs font-semibold text-gray-500 uppercase">Titre</th>
+            <th className="text-left px-6 py-3 text-xs font-semibold text-gray-500 uppercase">Type</th>
+            <th className="text-right px-6 py-3 text-xs font-semibold text-gray-500 uppercase">Quantité</th>
+            <th className="text-right px-6 py-3 text-xs font-semibold text-gray-500 uppercase">PRU FIFO</th>
+            <th className="text-right px-6 py-3 text-xs font-semibold text-gray-500 uppercase">Valeur d&apos;acquisition</th>
+            <th className="text-right px-6 py-3 text-xs font-semibold text-gray-500 uppercase">Compte</th>
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-100">
-          {portefeuille.map((row, i) => (
+          {portefeuille.map((row: any, i: number) => (
             <tr key={i} className="hover:bg-gray-50">
               <td className="px-6 py-4">
                 <p className="font-medium text-gray-900">{row.titre_name}</p>
-                {row.isin && (
-                  <p className="text-xs text-gray-400">{row.isin}</p>
-                )}
+                {row.isin && <p className="text-xs text-gray-400">{row.isin}</p>}
               </td>
               <td className="px-6 py-4">
-                <span className="text-sm text-gray-600 capitalize">
-                  {row.titre_type}
-                </span>
+                <span className="text-sm text-gray-600 capitalize">{row.titre_type}</span>
               </td>
-              <td className="px-6 py-4 text-right font-mono text-sm">
-                {formatNumber(row.quantite_totale)}
-              </td>
-              <td className="px-6 py-4 text-right font-mono text-sm">
-                {formatCurrency(row.pru_fifo)}
-              </td>
-              <td className="px-6 py-4 text-right font-mono text-sm font-medium">
-                {formatCurrency(row.valeur_acquisition_totale)}
-              </td>
-              <td className="px-6 py-4 text-right text-sm text-gray-500">
-                {row.compte_comptable}
-              </td>
+              <td className="px-6 py-4 text-right font-mono text-sm">{formatNumber(row.quantite_totale)}</td>
+              <td className="px-6 py-4 text-right font-mono text-sm">{formatCurrency(row.pru_fifo)}</td>
+              <td className="px-6 py-4 text-right font-mono text-sm font-medium">{formatCurrency(row.valeur_acquisition_totale)}</td>
+              <td className="px-6 py-4 text-right text-sm text-gray-500">{row.compte_comptable}</td>
             </tr>
           ))}
         </tbody>
@@ -224,8 +198,7 @@ function MouvementsTab({
       <div className="bg-white rounded-xl border border-gray-200 p-12 text-center">
         <ArrowUpDown className="w-10 h-10 text-gray-300 mx-auto mb-3" />
         <p className="text-gray-500">
-          Aucun mouvement enregistré. Ajoutez un achat ou une vente, ou importez
-          un fichier.
+          Aucun mouvement enregistré. Ajoutez un achat ou une vente, ou importez un fichier.
         </p>
       </div>
     );
@@ -236,63 +209,33 @@ function MouvementsTab({
       <table className="w-full">
         <thead>
           <tr className="bg-gray-50 border-b border-gray-200">
-            <th className="text-left px-6 py-3 text-xs font-semibold text-gray-500 uppercase">
-              Date
-            </th>
-            <th className="text-left px-6 py-3 text-xs font-semibold text-gray-500 uppercase">
-              Type
-            </th>
-            <th className="text-left px-6 py-3 text-xs font-semibold text-gray-500 uppercase">
-              Titre
-            </th>
-            <th className="text-right px-6 py-3 text-xs font-semibold text-gray-500 uppercase">
-              Quantité
-            </th>
-            <th className="text-right px-6 py-3 text-xs font-semibold text-gray-500 uppercase">
-              Prix unitaire
-            </th>
-            <th className="text-right px-6 py-3 text-xs font-semibold text-gray-500 uppercase">
-              Frais
-            </th>
-            <th className="text-right px-6 py-3 text-xs font-semibold text-gray-500 uppercase">
-              Total
-            </th>
+            <th className="text-left px-6 py-3 text-xs font-semibold text-gray-500 uppercase">Date</th>
+            <th className="text-left px-6 py-3 text-xs font-semibold text-gray-500 uppercase">Type</th>
+            <th className="text-left px-6 py-3 text-xs font-semibold text-gray-500 uppercase">Titre</th>
+            <th className="text-right px-6 py-3 text-xs font-semibold text-gray-500 uppercase">Quantité</th>
+            <th className="text-right px-6 py-3 text-xs font-semibold text-gray-500 uppercase">Prix unitaire</th>
+            <th className="text-right px-6 py-3 text-xs font-semibold text-gray-500 uppercase">Frais</th>
+            <th className="text-right px-6 py-3 text-xs font-semibold text-gray-500 uppercase">Total</th>
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-100">
-          {mouvements.map((mvt) => (
+          {mouvements.map((mvt: any) => (
             <tr key={mvt.id} className="hover:bg-gray-50">
-              <td className="px-6 py-4 text-sm">
-                {new Date(mvt.date).toLocaleDateString("fr-FR")}
-              </td>
+              <td className="px-6 py-4 text-sm">{new Date(mvt.date).toLocaleDateString("fr-FR")}</td>
               <td className="px-6 py-4">
-                <span
-                  className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                    mvt.type === "achat"
-                      ? "bg-green-100 text-green-700"
-                      : "bg-red-100 text-red-700"
-                  }`}
-                >
+                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                  mvt.type === "achat" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
+                }`}>
                   {mvt.type === "achat" ? "Achat" : "Vente"}
                 </span>
               </td>
               <td className="px-6 py-4">
-                <p className="text-sm font-medium text-gray-900">
-                  {mvt.titres?.name}
-                </p>
+                <p className="text-sm font-medium text-gray-900">{mvt.titres?.name}</p>
               </td>
-              <td className="px-6 py-4 text-right font-mono text-sm">
-                {formatNumber(mvt.quantite)}
-              </td>
-              <td className="px-6 py-4 text-right font-mono text-sm">
-                {formatCurrency(mvt.prix_unitaire)}
-              </td>
-              <td className="px-6 py-4 text-right font-mono text-sm text-gray-500">
-                {formatCurrency(mvt.frais)}
-              </td>
-              <td className="px-6 py-4 text-right font-mono text-sm font-medium">
-                {formatCurrency(mvt.montant_total)}
-              </td>
+              <td className="px-6 py-4 text-right font-mono text-sm">{formatNumber(mvt.quantite)}</td>
+              <td className="px-6 py-4 text-right font-mono text-sm">{formatCurrency(mvt.prix_unitaire)}</td>
+              <td className="px-6 py-4 text-right font-mono text-sm text-gray-500">{formatCurrency(mvt.frais)}</td>
+              <td className="px-6 py-4 text-right font-mono text-sm font-medium">{formatCurrency(mvt.montant_total)}</td>
             </tr>
           ))}
         </tbody>
@@ -315,8 +258,7 @@ function CessionsTab({
       <div className="bg-white rounded-xl border border-gray-200 p-12 text-center">
         <Receipt className="w-10 h-10 text-gray-300 mx-auto mb-3" />
         <p className="text-gray-500">
-          Aucune cession enregistrée. Les cessions apparaîtront ici après
-          l&apos;enregistrement d&apos;une vente.
+          Aucune cession enregistrée. Les cessions apparaîtront ici après l&apos;enregistrement d&apos;une vente.
         </p>
       </div>
     );
@@ -334,84 +276,47 @@ function CessionsTab({
 
   return (
     <div>
-      {/* Résumé */}
       <div className="grid grid-cols-3 gap-4 mb-4">
         <div className="bg-green-50 rounded-lg px-4 py-3">
           <p className="text-xs text-green-600 font-medium">Plus-values</p>
-          <p className="text-lg font-bold text-green-700">
-            {formatCurrency(totalPV)}
-          </p>
+          <p className="text-lg font-bold text-green-700">{formatCurrency(totalPV)}</p>
         </div>
         <div className="bg-red-50 rounded-lg px-4 py-3">
           <p className="text-xs text-red-600 font-medium">Moins-values</p>
-          <p className="text-lg font-bold text-red-700">
-            {formatCurrency(totalMV)}
-          </p>
+          <p className="text-lg font-bold text-red-700">{formatCurrency(totalMV)}</p>
         </div>
         <div className="bg-gray-50 rounded-lg px-4 py-3">
           <p className="text-xs text-gray-600 font-medium">Résultat net</p>
-          <p
-            className={`text-lg font-bold ${
-              totalNet >= 0 ? "text-green-700" : "text-red-700"
-            }`}
-          >
+          <p className={`text-lg font-bold ${totalNet >= 0 ? "text-green-700" : "text-red-700"}`}>
             {formatCurrency(totalNet)}
           </p>
         </div>
       </div>
 
-      {/* Tableau */}
       <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
         <table className="w-full">
           <thead>
             <tr className="bg-gray-50 border-b border-gray-200">
-              <th className="text-left px-6 py-3 text-xs font-semibold text-gray-500 uppercase">
-                Date
-              </th>
-              <th className="text-left px-6 py-3 text-xs font-semibold text-gray-500 uppercase">
-                Titre
-              </th>
-              <th className="text-right px-6 py-3 text-xs font-semibold text-gray-500 uppercase">
-                Quantité
-              </th>
-              <th className="text-right px-6 py-3 text-xs font-semibold text-gray-500 uppercase">
-                Prix achat (FIFO)
-              </th>
-              <th className="text-right px-6 py-3 text-xs font-semibold text-gray-500 uppercase">
-                Prix vente
-              </th>
-              <th className="text-right px-6 py-3 text-xs font-semibold text-gray-500 uppercase">
-                +/- Value
-              </th>
+              <th className="text-left px-6 py-3 text-xs font-semibold text-gray-500 uppercase">Date</th>
+              <th className="text-left px-6 py-3 text-xs font-semibold text-gray-500 uppercase">Titre</th>
+              <th className="text-right px-6 py-3 text-xs font-semibold text-gray-500 uppercase">Quantité</th>
+              <th className="text-right px-6 py-3 text-xs font-semibold text-gray-500 uppercase">Prix achat (FIFO)</th>
+              <th className="text-right px-6 py-3 text-xs font-semibold text-gray-500 uppercase">Prix vente</th>
+              <th className="text-right px-6 py-3 text-xs font-semibold text-gray-500 uppercase">+/- Value</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100">
-            {cessions.map((c) => (
+            {cessions.map((c: any) => (
               <tr key={c.id} className="hover:bg-gray-50">
-                <td className="px-6 py-4 text-sm">
-                  {new Date(c.date_cession).toLocaleDateString("fr-FR")}
-                </td>
-                <td className="px-6 py-4 text-sm font-medium text-gray-900">
-                  {c.titres?.name}
-                </td>
-                <td className="px-6 py-4 text-right font-mono text-sm">
-                  {formatNumber(c.quantite)}
-                </td>
-                <td className="px-6 py-4 text-right font-mono text-sm">
-                  {formatCurrency(c.prix_achat_unitaire)}
-                </td>
-                <td className="px-6 py-4 text-right font-mono text-sm">
-                  {formatCurrency(c.prix_vente_unitaire)}
-                </td>
-                <td
-                  className={`px-6 py-4 text-right font-mono text-sm font-medium ${
-                    c.plus_moins_value >= 0
-                      ? "text-green-600"
-                      : "text-red-600"
-                  }`}
-                >
-                  {c.plus_moins_value >= 0 ? "+" : ""}
-                  {formatCurrency(c.plus_moins_value)}
+                <td className="px-6 py-4 text-sm">{new Date(c.date_cession).toLocaleDateString("fr-FR")}</td>
+                <td className="px-6 py-4 text-sm font-medium text-gray-900">{c.titres?.name}</td>
+                <td className="px-6 py-4 text-right font-mono text-sm">{formatNumber(c.quantite)}</td>
+                <td className="px-6 py-4 text-right font-mono text-sm">{formatCurrency(c.prix_achat_unitaire)}</td>
+                <td className="px-6 py-4 text-right font-mono text-sm">{formatCurrency(c.prix_vente_unitaire)}</td>
+                <td className={`px-6 py-4 text-right font-mono text-sm font-medium ${
+                  c.plus_moins_value >= 0 ? "text-green-600" : "text-red-600"
+                }`}>
+                  {c.plus_moins_value >= 0 ? "+" : ""}{formatCurrency(c.plus_moins_value)}
                 </td>
               </tr>
             ))}
