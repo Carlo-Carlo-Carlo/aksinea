@@ -1,4 +1,5 @@
 "use client";
+
 import Link from "next/link";
 import {
   ArrowRight,
@@ -9,6 +10,8 @@ import {
   Shield,
   Zap,
   Check,
+  Clock,
+  AlertTriangle,
 } from "lucide-react";
 
 export default function Home() {
@@ -40,7 +43,7 @@ export default function Home() {
               href="/register"
               className="px-4 py-2 bg-primary-600 text-white text-sm font-medium rounded-lg hover:bg-primary-700 transition-colors"
             >
-              Essai gratuit
+              Créer mon compte
             </Link>
           </div>
         </div>
@@ -61,18 +64,17 @@ export default function Home() {
           <p className="text-xl text-primary-100 mb-10 max-w-2xl mx-auto">
             Aksinea calcule automatiquement les plus/moins-values en méthode
             FIFO/PEPS et génère les écritures comptables prêtes à importer.
-            Fini les tableurs Excel. Ne payez plus d&apos;impôt sur des plus-values latentes non imposables.
+            L&apos;outil qui empêche vos clients de surpayer leurs impôts sur les VMP.
           </p>
           <div className="flex gap-4 justify-center">
             <Link
               href="/register"
               className="px-8 py-3.5 bg-white text-primary-700 font-semibold rounded-lg hover:bg-primary-50 transition-colors flex items-center gap-2"
             >
-              Essai gratuit 14 jours
+              Commencer gratuitement
               <ArrowRight className="w-4 h-4" />
             </Link>
-            
-              <button
+            <button
               onClick={() => document.getElementById("features")?.scrollIntoView({ behavior: "smooth" })}
               className="px-8 py-3.5 border border-white/30 text-white font-semibold rounded-lg hover:bg-white/10 transition-colors"
             >
@@ -80,7 +82,7 @@ export default function Home() {
             </button>
           </div>
           <p className="text-sm text-primary-200 mt-4">
-            Sans carte bancaire • Configuration en 2 minutes
+            Gratuit pour 1 dossier • Sans carte bancaire • Configuration en 2 minutes
           </p>
         </div>
       </section>
@@ -112,6 +114,10 @@ export default function Home() {
                   <span className="text-red-500 font-bold text-lg">✕</span>
                   <p className="text-gray-600">Aucun logiciel comptable ne gère le FIFO correctement</p>
                 </div>
+                <div className="flex items-start gap-3">
+                  <span className="text-red-500 font-bold text-lg">✕</span>
+                  <p className="text-gray-600">Vos clients surpayent leurs impôts sur des plus-values latentes non imposables</p>
+                </div>
               </div>
             </div>
             <div className="bg-white rounded-2xl border border-gray-200 p-8">
@@ -141,7 +147,7 @@ export default function Home() {
                   <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
                     <Check className="w-3.5 h-3.5 text-green-600" />
                   </div>
-                  <p className="text-gray-600">Suivi du portefeuille avec PRU FIFO en temps réel</p>
+                  <p className="text-gray-600">Distinguez automatiquement les régimes fiscaux (OPCVM taxable vs standard)</p>
                 </div>
               </div>
             </div>
@@ -154,7 +160,7 @@ export default function Home() {
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-16">
             <h2 className="text-3xl font-bold text-gray-900 mb-4">
-              Tout ce dont vous avez besoin
+              Gagnez du temps. Sécurisez vos calculs.
             </h2>
             <p className="text-lg text-gray-500 max-w-2xl mx-auto">
               Un outil conçu par et pour les experts-comptables qui gèrent des
@@ -177,6 +183,34 @@ export default function Home() {
             </div>
 
             <div className="p-6 rounded-xl border border-gray-200 hover:border-primary-200 hover:shadow-lg transition-all">
+              <div className="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center mb-4">
+                <Clock className="w-6 h-6 text-amber-600" />
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                2h gagnées par dossier / mois
+              </h3>
+              <p className="text-gray-500">
+                Plus de saisie manuelle dans Excel. Importez un fichier,
+                récupérez vos écritures. Ce qui prenait une demi-journée
+                prend 5 minutes.
+              </p>
+            </div>
+
+            <div className="p-6 rounded-xl border border-gray-200 hover:border-primary-200 hover:shadow-lg transition-all">
+              <div className="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center mb-4">
+                <AlertTriangle className="w-6 h-6 text-red-600" />
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                Zéro risque d&apos;erreur
+              </h3>
+              <p className="text-gray-500">
+                Le moteur FIFO ne se trompe pas. Fini les inversions de lots,
+                les oublis de frais, les erreurs de calcul qui coûtent cher
+                à vos clients.
+              </p>
+            </div>
+
+            <div className="p-6 rounded-xl border border-gray-200 hover:border-primary-200 hover:shadow-lg transition-all">
               <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center mb-4">
                 <Upload className="w-6 h-6 text-green-600" />
               </div>
@@ -191,8 +225,8 @@ export default function Home() {
             </div>
 
             <div className="p-6 rounded-xl border border-gray-200 hover:border-primary-200 hover:shadow-lg transition-all">
-              <div className="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center mb-4">
-                <Download className="w-6 h-6 text-amber-600" />
+              <div className="w-12 h-12 bg-violet-100 rounded-xl flex items-center justify-center mb-4">
+                <Download className="w-6 h-6 text-violet-600" />
               </div>
               <h3 className="text-lg font-semibold text-gray-900 mb-2">
                 Export écritures comptables
@@ -204,49 +238,44 @@ export default function Home() {
             </div>
 
             <div className="p-6 rounded-xl border border-gray-200 hover:border-primary-200 hover:shadow-lg transition-all">
-              <div className="w-12 h-12 bg-violet-100 rounded-xl flex items-center justify-center mb-4">
-                <FolderOpen className="w-6 h-6 text-violet-600" />
-              </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                Multi-dossiers
-              </h3>
-              <p className="text-gray-500">
-                Un dossier par client. Chaque portefeuille est indépendant avec
-                son propre historique et ses propres calculs.
-              </p>
-            </div>
-
-            <div className="p-6 rounded-xl border border-gray-200 hover:border-primary-200 hover:shadow-lg transition-all">
-              <div className="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center mb-4">
-                <Shield className="w-6 h-6 text-red-600" />
-              </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                Conformité PCG
-              </h3>
-              <p className="text-gray-500">
-                Méthode PEPS conforme au Plan Comptable Général et aux exigences
-                fiscales françaises. Comptes 503, 506, 508 gérés automatiquement.
-              </p>
-            </div>
-
-            <div className="p-6 rounded-xl border border-gray-200 hover:border-primary-200 hover:shadow-lg transition-all">
               <div className="w-12 h-12 bg-cyan-100 rounded-xl flex items-center justify-center mb-4">
-                <Zap className="w-6 h-6 text-cyan-600" />
+                <Shield className="w-6 h-6 text-cyan-600" />
               </div>
               <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                Rapide et simple
+                Régimes fiscaux automatiques
               </h3>
               <p className="text-gray-500">
-                Interface épurée, prise en main immédiate. Importez un fichier,
-                récupérez vos écritures. Rien de superflu.
+                Distinguez OPCVM taxables, OPCVM actions 90%+, FCPR/FCPI/FIP.
+                Vos clients ne surpayent plus d&apos;impôt sur des plus-values
+                latentes non imposables.
               </p>
             </div>
           </div>
         </div>
       </section>
 
-     {/* Pricing */}
-      <section id="pricing" className="py-20 bg-gray-50">
+      {/* Social proof / ROI */}
+      <section className="py-16 bg-gray-50">
+        <div className="max-w-4xl mx-auto px-6">
+          <div className="grid md:grid-cols-3 gap-8 text-center">
+            <div>
+              <p className="text-4xl font-bold text-primary-700 mb-2">2h</p>
+              <p className="text-gray-500">gagnées par dossier et par mois</p>
+            </div>
+            <div>
+              <p className="text-4xl font-bold text-primary-700 mb-2">0</p>
+              <p className="text-gray-500">erreur de calcul FIFO</p>
+            </div>
+            <div>
+              <p className="text-4xl font-bold text-primary-700 mb-2">5 min</p>
+              <p className="text-gray-500">pour importer et exporter les écritures</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Pricing */}
+      <section id="pricing" className="py-20">
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-16">
             <h2 className="text-3xl font-bold text-gray-900 mb-4">
@@ -382,10 +411,87 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="text-center mt-8">
-            <p className="text-sm text-gray-500">
-              Vous passez 3h/mois sur le suivi des titres de vos clients ? Aksinea vous en rend 2.
-            </p>
+          <div className="text-center mt-10">
+            <div className="inline-flex items-center gap-2 bg-primary-50 rounded-lg px-6 py-3">
+              <Clock className="w-5 h-5 text-primary-600" />
+              <p className="text-primary-700 font-medium">
+                Vous passez 3h/mois sur le suivi des titres ? Aksinea vous en rend 2.
+                À 100€/h, c&apos;est 200€ économisés pour 19,99€.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ */}
+      <section id="faq" className="py-20 bg-gray-50">
+        <div className="max-w-3xl mx-auto px-6">
+          <h2 className="text-3xl font-bold text-gray-900 mb-12 text-center">
+            Questions fréquentes
+          </h2>
+          <div className="space-y-6">
+            <div className="border border-gray-200 rounded-xl p-6 bg-white">
+              <h3 className="font-semibold text-gray-900 mb-2">
+                Qu&apos;est-ce que la méthode FIFO/PEPS ?
+              </h3>
+              <p className="text-gray-500">
+                La méthode Premier Entré Premier Sorti (PEPS/FIFO) est la
+                méthode fiscalement reconnue en France pour calculer les
+                plus-values sur cession de titres. Les premiers titres achetés
+                sont considérés comme les premiers vendus.
+              </p>
+            </div>
+            <div className="border border-gray-200 rounded-xl p-6 bg-white">
+              <h3 className="font-semibold text-gray-900 mb-2">
+                Quels types de titres sont gérés ?
+              </h3>
+              <p className="text-gray-500">
+                Actions (compte 503), obligations (compte 506), OPCVM et autres
+                valeurs mobilières de placement (compte 508). Chaque type est
+                automatiquement associé au bon compte comptable et au bon régime fiscal.
+              </p>
+            </div>
+            <div className="border border-gray-200 rounded-xl p-6 bg-white">
+              <h3 className="font-semibold text-gray-900 mb-2">
+                Puis-je importer les données de mes clients ?
+              </h3>
+              <p className="text-gray-500">
+                Oui. Aksinea accepte les fichiers CSV et Excel. Les colonnes
+                sont détectées automatiquement, et vous pouvez prévisualiser les
+                données avant de valider l&apos;import.
+              </p>
+            </div>
+            <div className="border border-gray-200 rounded-xl p-6 bg-white">
+              <h3 className="font-semibold text-gray-900 mb-2">
+                L&apos;export est-il compatible avec mon logiciel comptable ?
+              </h3>
+              <p className="text-gray-500">
+                L&apos;export génère un fichier CSV avec les colonnes standard
+                (date, journal, compte, libellé, débit, crédit) compatible avec
+                la plupart des logiciels comptables. Le format peut être adapté
+                sur demande.
+              </p>
+            </div>
+            <div className="border border-gray-200 rounded-xl p-6 bg-white">
+              <h3 className="font-semibold text-gray-900 mb-2">
+                Mes données sont-elles sécurisées ?
+              </h3>
+              <p className="text-gray-500">
+                Vos données sont hébergées en Europe sur des serveurs
+                sécurisés. Chaque cabinet n&apos;a accès qu&apos;à ses propres dossiers.
+                Les communications sont chiffrées en HTTPS.
+              </p>
+            </div>
+            <div className="border border-gray-200 rounded-xl p-6 bg-white">
+              <h3 className="font-semibold text-gray-900 mb-2">
+                Le plan gratuit est-il vraiment gratuit ?
+              </h3>
+              <p className="text-gray-500">
+                Oui, le plan gratuit inclut 1 dossier client avec le calcul FIFO
+                complet, sans limite de durée et sans carte bancaire. Vous pouvez
+                upgrader vers Pro quand vous avez besoin de plus de dossiers.
+              </p>
+            </div>
           </div>
         </div>
       </section>
@@ -403,9 +509,12 @@ export default function Home() {
             href="/register"
             className="inline-flex items-center gap-2 px-8 py-3.5 bg-white text-primary-700 font-semibold rounded-lg hover:bg-primary-50 transition-colors"
           >
-            Essai gratuit 14 jours
+            Commencer gratuitement
             <ArrowRight className="w-4 h-4" />
           </Link>
+          <p className="text-sm text-primary-200 mt-4">
+            Gratuit pour 1 dossier • Sans carte bancaire
+          </p>
         </div>
       </section>
 
