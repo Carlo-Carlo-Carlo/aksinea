@@ -17,13 +17,14 @@ import {
 export default function Home() {
   return (
     <div className="min-h-screen bg-white">
-      {/* Navbar */}
+     {/* Navbar */}
       <nav className="border-b border-gray-100">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span className="text-xl font-bold text-primary-700">Aksinea</span>
           </div>
-          <div className="flex items-center gap-4">
+          {/* Desktop nav */}
+          <div className="hidden md:flex items-center gap-4">
             <a href="#features" className="text-sm text-gray-600 hover:text-gray-900">
               Fonctionnalités
             </a>
@@ -46,6 +47,39 @@ export default function Home() {
               Créer mon compte
             </Link>
           </div>
+          {/* Mobile hamburger */}
+          <button
+            onClick={() => {
+              const menu = document.getElementById("mobile-menu");
+              if (menu) menu.classList.toggle("hidden");
+            }}
+            className="md:hidden p-2 text-gray-600 hover:text-gray-900"
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+        </div>
+        {/* Mobile menu */}
+        <div id="mobile-menu" className="hidden md:hidden border-t border-gray-100 px-6 py-4 space-y-3 bg-white">
+          <a href="#features" className="block text-sm text-gray-600 hover:text-gray-900 py-1">
+            Fonctionnalités
+          </a>
+          <a href="#pricing" className="block text-sm text-gray-600 hover:text-gray-900 py-1">
+            Tarifs
+          </a>
+          <a href="#faq" className="block text-sm text-gray-600 hover:text-gray-900 py-1">
+            FAQ
+          </a>
+          <Link href="/login" className="block text-sm text-gray-600 hover:text-gray-900 py-1">
+            Connexion
+          </Link>
+          <Link
+            href="/register"
+            className="block w-full py-2.5 text-center bg-primary-600 text-white text-sm font-medium rounded-lg hover:bg-primary-700 transition-colors"
+          >
+            Créer mon compte
+          </Link>
         </div>
       </nav>
 
@@ -56,15 +90,15 @@ export default function Home() {
             <Zap className="w-4 h-4" />
             Calcul FIFO automatique pour experts-comptables
           </div>
-          <h1 className="text-5xl font-bold mb-6 leading-tight">
+         <h1 className="text-3xl md:text-5xl font-bold mb-6 leading-tight">
             La comptabilité des titres,
             <br />
             enfin simplifiée.
           </h1>
-          <p className="text-xl text-primary-100 mb-10 max-w-2xl mx-auto">
+          <p className="text-lg md:text-xl text-primary-100 mb-10 max-w-2xl mx-auto px-4">
             Aksinea, l&apos;outil qui empêche vos clients de surpayer leurs impôts sur les valeurs mobilières de placement.
           </p>
-          <div className="flex gap-4 justify-center">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center px-4">
             <Link
               href="/register"
               className="px-8 py-3.5 bg-white text-primary-700 font-semibold rounded-lg hover:bg-primary-50 transition-colors flex items-center gap-2"
