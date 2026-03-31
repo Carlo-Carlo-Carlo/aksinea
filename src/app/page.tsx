@@ -284,7 +284,7 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+          <div className="grid md:grid-cols-2 gap-8 max-w-3xl mx-auto">
             {/* Free */}
             <div className="bg-white rounded-2xl border border-gray-200 p-8">
               <h3 className="text-lg font-semibold text-gray-900">Gratuit</h3>
@@ -368,45 +368,7 @@ export default function Home() {
               </Link>
             </div>
 
-            {/* Connecté */}
-            <div className="bg-white rounded-2xl border border-gray-200 p-8">
-              <h3 className="text-lg font-semibold text-gray-900">Connecté</h3>
-              <p className="text-sm text-gray-500 mt-1">
-                Pour les cabinets premium
-              </p>
-              <div className="mt-6 mb-8">
-                <span className="text-4xl font-bold text-gray-900">49€</span>
-                <span className="text-gray-500 ml-1">HT / mois</span>
-              </div>
-              <ul className="space-y-3 mb-8">
-                <li className="flex items-center gap-2 text-sm text-gray-600">
-                  <Check className="w-4 h-4 text-green-500 flex-shrink-0" />
-                  Tout le plan Pro
-                </li>
-                <li className="flex items-center gap-2 text-sm text-gray-600">
-                  <Check className="w-4 h-4 text-green-500 flex-shrink-0" />
-                  Intégration Pennylane (bientôt)
-                </li>
-                <li className="flex items-center gap-2 text-sm text-gray-600">
-                  <Check className="w-4 h-4 text-green-500 flex-shrink-0" />
-                  Connexion flux bancaires (bientôt)
-                </li>
-                <li className="flex items-center gap-2 text-sm text-gray-600">
-                  <Check className="w-4 h-4 text-green-500 flex-shrink-0" />
-                  Synthèse fiscale automatique (bientôt)
-                </li>
-                <li className="flex items-center gap-2 text-sm text-gray-600">
-                  <Check className="w-4 h-4 text-green-500 flex-shrink-0" />
-                  Support dédié
-                </li>
-              </ul>
-              <Link
-                href="/register"
-                className="block w-full py-3 text-center font-semibold rounded-lg border border-primary-600 text-primary-600 hover:bg-primary-50 transition-colors"
-              >
-                Commencer gratuitement
-              </Link>
-            </div>
+    
           </div>
 
           <div className="text-center mt-10">
