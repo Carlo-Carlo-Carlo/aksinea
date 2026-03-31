@@ -179,6 +179,7 @@ function PortefeuilleTab({
             <th className="text-right px-6 py-3 text-xs font-semibold text-gray-500 uppercase">PRU FIFO</th>
             <th className="text-right px-6 py-3 text-xs font-semibold text-gray-500 uppercase">Valeur d&apos;acquisition</th>
             <th className="text-right px-6 py-3 text-xs font-semibold text-gray-500 uppercase">Compte</th>
+            <th className="text-right px-6 py-3 text-xs font-semibold text-gray-500 uppercase">Régime fiscal</th>
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-100">
@@ -195,6 +196,19 @@ function PortefeuilleTab({
               <td className="px-6 py-4 text-right font-mono text-sm">{formatCurrency(row.pru_fifo)}</td>
               <td className="px-6 py-4 text-right font-mono text-sm font-medium">{formatCurrency(row.valeur_acquisition_totale)}</td>
               <td className="px-6 py-4 text-right text-sm text-gray-500">{row.compte_comptable}</td>
+              <td className="px-6 py-4 text-right">
+                <span className={`text-xs px-2 py-0.5 rounded-full ${
+                  row.regime_fiscal === 'opcvm_taxable' ? 'bg-red-100 text-red-700' :
+                  row.regime_fiscal === 'opcvm_actions_90' ? 'bg-green-100 text-green-700' :
+                  row.regime_fiscal === 'fcpr_fcpi_fip' ? 'bg-green-100 text-green-700' :
+                  'bg-gray-100 text-gray-600'
+                }`}>
+                  {row.regime_fiscal === 'standard' ? 'Standard' :
+                   row.regime_fiscal === 'opcvm_taxable' ? 'OPCVM taxable' :
+                   row.regime_fiscal === 'opcvm_actions_90' ? 'OPCVM 90%+' :
+                   row.regime_fiscal === 'fcpr_fcpi_fip' ? 'FCPR/FCPI/FIP' : '—'}
+                </span>
+              </td>
             </tr>
           ))}
         </tbody>
