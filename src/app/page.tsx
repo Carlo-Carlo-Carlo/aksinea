@@ -61,7 +61,7 @@ export default function Home() {
           <p className="text-xl text-primary-100 mb-10 max-w-2xl mx-auto">
             Aksinea calcule automatiquement les plus/moins-values en méthode
             FIFO/PEPS et génère les écritures comptables prêtes à importer.
-            Fini les tableurs Excel.
+            Fini les tableurs Excel. Ne payez plus d&apos;impôt sur des plus-values latentes non imposables.
           </p>
           <div className="flex gap-4 justify-center">
             <Link
