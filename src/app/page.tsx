@@ -245,7 +245,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Pricing */}
+     {/* Pricing */}
       <section id="pricing" className="py-20 bg-gray-50">
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-16">
@@ -253,25 +253,25 @@ export default function Home() {
               Tarifs simples et transparents
             </h2>
             <p className="text-lg text-gray-500">
-              Essai gratuit 14 jours, sans carte bancaire.
+              Commencez gratuitement, upgradez quand vous en avez besoin.
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-8 max-w-3xl mx-auto">
-            {/* Starter */}
+          <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+            {/* Free */}
             <div className="bg-white rounded-2xl border border-gray-200 p-8">
-              <h3 className="text-lg font-semibold text-gray-900">Starter</h3>
+              <h3 className="text-lg font-semibold text-gray-900">Gratuit</h3>
               <p className="text-sm text-gray-500 mt-1">
-                Pour les cabinets avec quelques dossiers
+                Pour découvrir Aksinea
               </p>
               <div className="mt-6 mb-8">
-                <span className="text-4xl font-bold text-gray-900">9,99€</span>
-                <span className="text-gray-500 ml-1">HT / mois</span>
+                <span className="text-4xl font-bold text-gray-900">0€</span>
+                <span className="text-gray-500 ml-1">pour toujours</span>
               </div>
               <ul className="space-y-3 mb-8">
                 <li className="flex items-center gap-2 text-sm text-gray-600">
                   <Check className="w-4 h-4 text-green-500 flex-shrink-0" />
-                  5 dossiers clients
+                  1 dossier client
                 </li>
                 <li className="flex items-center gap-2 text-sm text-gray-600">
                   <Check className="w-4 h-4 text-green-500 flex-shrink-0" />
@@ -283,18 +283,18 @@ export default function Home() {
                 </li>
                 <li className="flex items-center gap-2 text-sm text-gray-600">
                   <Check className="w-4 h-4 text-green-500 flex-shrink-0" />
-                  Export écritures comptables
+                  Régime fiscal par titre
                 </li>
                 <li className="flex items-center gap-2 text-sm text-gray-600">
                   <Check className="w-4 h-4 text-green-500 flex-shrink-0" />
-                  Support email
+                  Exercice en cours uniquement
                 </li>
               </ul>
               <Link
                 href="/register"
-                className="block w-full py-3 text-center font-semibold rounded-lg border border-primary-600 text-primary-600 hover:bg-primary-50 transition-colors"
+                className="block w-full py-3 text-center font-semibold rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors"
               >
-                Commencer gratuitement
+                Créer mon compte
               </Link>
             </div>
 
@@ -305,7 +305,7 @@ export default function Home() {
               </div>
               <h3 className="text-lg font-semibold text-gray-900">Pro</h3>
               <p className="text-sm text-gray-500 mt-1">
-                Pour les cabinets avec un volume important
+                Pour les cabinets en activité
               </p>
               <div className="mt-6 mb-8">
                 <span className="text-4xl font-bold text-gray-900">19,99€</span>
@@ -318,15 +318,15 @@ export default function Home() {
                 </li>
                 <li className="flex items-center gap-2 text-sm text-gray-600">
                   <Check className="w-4 h-4 text-green-500 flex-shrink-0" />
-                  Tout le plan Starter
+                  Tout le plan Gratuit
+                </li>
+                <li className="flex items-center gap-2 text-sm text-gray-600">
+                  <Check className="w-4 h-4 text-green-500 flex-shrink-0" />
+                  Export écritures comptables
                 </li>
                 <li className="flex items-center gap-2 text-sm text-gray-600">
                   <Check className="w-4 h-4 text-green-500 flex-shrink-0" />
                   Historique multi-exercices
-                </li>
-                <li className="flex items-center gap-2 text-sm text-gray-600">
-                  <Check className="w-4 h-4 text-green-500 flex-shrink-0" />
-                  Dépréciations à la clôture (bientôt)
                 </li>
                 <li className="flex items-center gap-2 text-sm text-gray-600">
                   <Check className="w-4 h-4 text-green-500 flex-shrink-0" />
@@ -340,79 +340,52 @@ export default function Home() {
                 Commencer gratuitement
               </Link>
             </div>
-          </div>
-        </div>
-      </section>
 
-      {/* FAQ */}
-      <section id="faq" className="py-20">
-        <div className="max-w-3xl mx-auto px-6">
-          <h2 className="text-3xl font-bold text-gray-900 mb-12 text-center">
-            Questions fréquentes
-          </h2>
-          <div className="space-y-6">
-            <div className="border border-gray-200 rounded-xl p-6">
-              <h3 className="font-semibold text-gray-900 mb-2">
-                Qu&apos;est-ce que la méthode FIFO/PEPS ?
-              </h3>
-              <p className="text-gray-500">
-                La méthode Premier Entré Premier Sorti (PEPS/FIFO) est la
-                méthode fiscalement reconnue en France pour calculer les
-                plus-values sur cession de titres. Les premiers titres achetés
-                sont considérés comme les premiers vendus.
+            {/* Connecté */}
+            <div className="bg-white rounded-2xl border border-gray-200 p-8">
+              <h3 className="text-lg font-semibold text-gray-900">Connecté</h3>
+              <p className="text-sm text-gray-500 mt-1">
+                Pour les cabinets premium
               </p>
+              <div className="mt-6 mb-8">
+                <span className="text-4xl font-bold text-gray-900">49€</span>
+                <span className="text-gray-500 ml-1">HT / mois</span>
+              </div>
+              <ul className="space-y-3 mb-8">
+                <li className="flex items-center gap-2 text-sm text-gray-600">
+                  <Check className="w-4 h-4 text-green-500 flex-shrink-0" />
+                  Tout le plan Pro
+                </li>
+                <li className="flex items-center gap-2 text-sm text-gray-600">
+                  <Check className="w-4 h-4 text-green-500 flex-shrink-0" />
+                  Intégration Pennylane (bientôt)
+                </li>
+                <li className="flex items-center gap-2 text-sm text-gray-600">
+                  <Check className="w-4 h-4 text-green-500 flex-shrink-0" />
+                  Connexion flux bancaires (bientôt)
+                </li>
+                <li className="flex items-center gap-2 text-sm text-gray-600">
+                  <Check className="w-4 h-4 text-green-500 flex-shrink-0" />
+                  Synthèse fiscale automatique (bientôt)
+                </li>
+                <li className="flex items-center gap-2 text-sm text-gray-600">
+                  <Check className="w-4 h-4 text-green-500 flex-shrink-0" />
+                  Support dédié
+                </li>
+              </ul>
+              <Link
+                href="/register"
+                className="block w-full py-3 text-center font-semibold rounded-lg border border-primary-600 text-primary-600 hover:bg-primary-50 transition-colors"
+              >
+                Commencer gratuitement
+              </Link>
             </div>
-            <div className="border border-gray-200 rounded-xl p-6">
-              <h3 className="font-semibold text-gray-900 mb-2">
-                Quels types de titres sont gérés ?
-              </h3>
-              <p className="text-gray-500">
-                Actions (compte 503), obligations (compte 506), OPCVM et autres
-                valeurs mobilières de placement (compte 508). Chaque type est
-                automatiquement associé au bon compte comptable.
-              </p>
-            </div>
-            <div className="border border-gray-200 rounded-xl p-6">
-              <h3 className="font-semibold text-gray-900 mb-2">
-                Puis-je importer les données de mes clients ?
-              </h3>
-              <p className="text-gray-500">
-                Oui. Aksinea accepte les fichiers CSV et Excel. Les colonnes
-                sont détectées automatiquement, et vous pouvez prévisualiser les
-                données avant de valider l&apos;import.
-              </p>
-            </div>
-            <div className="border border-gray-200 rounded-xl p-6">
-              <h3 className="font-semibold text-gray-900 mb-2">
-                L&apos;export est-il compatible avec mon logiciel comptable ?
-              </h3>
-              <p className="text-gray-500">
-                L&apos;export génère un fichier CSV avec les colonnes standard
-                (date, journal, compte, libellé, débit, crédit) compatible avec
-                la plupart des logiciels comptables. Le format peut être adapté
-                sur demande.
-              </p>
-            </div>
-            <div className="border border-gray-200 rounded-xl p-6">
-              <h3 className="font-semibold text-gray-900 mb-2">
-                Mes données sont-elles sécurisées ?
-              </h3>
-              <p className="text-gray-500">
-                Vos données sont hébergées en Europe sur des serveurs
-                sécurisés. Chaque cabinet n&apos;a accès qu&apos;à ses propres dossiers.
-                Les communications sont chiffrées en HTTPS.
-              </p>
-            </div>
-            <div className="border border-gray-200 rounded-xl p-6">
-              <h3 className="font-semibold text-gray-900 mb-2">
-                Puis-je tester avant de m&apos;engager ?
-              </h3>
-              <p className="text-gray-500">
-                Oui, l&apos;essai gratuit dure 14 jours, sans carte bancaire.
-                Vous avez accès à toutes les fonctionnalités pour tester avec de
-                vraies données.
-              </p>
-            </div>
+          </div>
+
+          <div className="text-center mt-8">
+            <p className="text-sm text-gray-500">
+              Vous passez 3h/mois sur le suivi des titres de vos clients ? Aksinea vous en rend 2.
+            </p>
           </div>
         </div>
       </section>
