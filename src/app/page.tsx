@@ -62,9 +62,7 @@ export default function Home() {
             enfin simplifiée.
           </h1>
           <p className="text-xl text-primary-100 mb-10 max-w-2xl mx-auto">
-            Aksinea calcule automatiquement les plus/moins-values en méthode
-            FIFO/PEPS et génère les écritures comptables prêtes à importer.
-            L&apos;outil qui empêche vos clients de surpayer leurs impôts sur les VMP.
+            Aksinea, l&apos;outil qui empêche vos clients de surpayer leurs impôts sur les VMP.
           </p>
           <div className="flex gap-4 justify-center">
             <Link
@@ -163,7 +161,7 @@ export default function Home() {
               Gagnez du temps. Sécurisez vos calculs.
             </h2>
             <p className="text-lg text-gray-500 max-w-2xl mx-auto">
-              Un outil conçu par et pour les experts-comptables qui gèrent des
+              Un outil conçu pour les experts-comptables qui gèrent des
               portefeuilles de titres.
             </p>
           </div>
