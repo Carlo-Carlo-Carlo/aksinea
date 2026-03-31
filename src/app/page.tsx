@@ -289,17 +289,17 @@ export default function Home() {
       {/* Social proof / ROI */}
       <section className="py-16 bg-gray-50">
         <div className="max-w-4xl mx-auto px-6">
-          <div className="grid md:grid-cols-3 gap-8 text-center">
+          <div className="grid grid-cols-3 gap-4 md:gap-8 text-center">
             <div>
-              <p className="text-4xl font-bold text-primary-700 mb-2">2h</p>
+             <p className="text-2xl md:text-4xl font-bold text-primary-700 mb-2">2h</p>
               <p className="text-gray-500">gagnées par dossier et par mois</p>
             </div>
             <div>
-              <p className="text-4xl font-bold text-primary-700 mb-2">0</p>
+              <p className="text-2xl md:text-4xl font-bold text-primary-700 mb-2">0</p>
               <p className="text-gray-500">erreur de calcul FIFO</p>
             </div>
             <div>
-              <p className="text-4xl font-bold text-primary-700 mb-2">5 min</p>
+              <p className="text-2xl md:text-4xl font-bold text-primary-700 mb-2">5 min</p>
               <p className="text-gray-500">pour importer et exporter les écritures</p>
             </div>
           </div>
