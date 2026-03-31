@@ -314,6 +314,21 @@ export default function MouvementPage() {
                     </select>
                   </div>
                 </div>
+                <div>
+                  <label className="block text-xs font-medium text-gray-600 mb-1">
+                    Régime fiscal
+                  </label>
+                  <select
+                    value={newTitreRegime}
+                    onChange={(e) => setNewTitreRegime(e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none bg-white"
+                  >
+                    <option value="standard">Standard (imposé à la cession)</option>
+                    <option value="opcvm_taxable">OPCVM taxable (écarts latents imposés)</option>
+                    <option value="opcvm_actions_90">OPCVM actions 90%+ (exempté)</option>
+                    <option value="fcpr_fcpi_fip">FCPR / FCPI / FIP (exempté)</option>
+                  </select>
+                </div>
                 <div className="flex gap-2">
                   <button
                     type="button"
