@@ -88,6 +88,7 @@ export default function MouvementPage() {
         isin: newTitreIsin.trim() || null,
         type: newTitreType,
         compte_comptable: newTitreCompte,
+        regime_fiscal: newTitreRegime,
       })
       .select()
       .single();
