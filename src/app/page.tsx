@@ -62,7 +62,7 @@ export default function Home() {
             enfin simplifiée.
           </h1>
           <p className="text-xl text-primary-100 mb-10 max-w-2xl mx-auto">
-            Aksinea, l&apos;outil qui empêche vos clients de surpayer leurs impôts sur les VMP.
+            Aksinea, l&apos;outil qui empêche vos clients de surpayer leurs impôts sur les valeurs mobilières de placement.
           </p>
           <div className="flex gap-4 justify-center">
             <Link
@@ -414,7 +414,6 @@ export default function Home() {
               <Clock className="w-5 h-5 text-primary-600" />
               <p className="text-primary-700 font-medium">
                 Vous passez 3h/mois sur le suivi des titres ? Aksinea vous en rend 2.
-                À 100€/h, c&apos;est 200€ économisés pour 19,99€.
               </p>
             </div>
           </div>
