@@ -521,16 +521,16 @@ export default function Home() {
                 Suivi des titres et calcul FIFO pour experts-comptables
               </p>
             </div>
-            <div className="flex gap-6 text-sm text-gray-500">
-              <a href="#" className="hover:text-gray-700">
+           <div className="flex gap-6 text-sm text-gray-500">
+              <Link href="/mentions-legales" className="hover:text-gray-700">
                 Mentions légales
-              </a>
-              <a href="#" className="hover:text-gray-700">
+              </Link>
+              <Link href="/cgv" className="hover:text-gray-700">
                 CGV
-              </a>
-              <a href="#" className="hover:text-gray-700">
-                Contact
-              </a>
+              </Link>
+              <Link href="/confidentialite" className="hover:text-gray-700">
+                Confidentialité
+              </Link>
             </div>
           </div>
           <div className="mt-8 pt-8 border-t border-gray-100 text-center text-sm text-gray-400">
