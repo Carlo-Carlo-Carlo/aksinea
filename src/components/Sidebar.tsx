@@ -39,6 +39,11 @@ export function Sidebar({ userName, cabinetName, isOpen, onClose }: SidebarProps
       label: "Dossiers clients",
       icon: FolderOpen,
     },
+    {
+      href: "/dashboard/profil",
+      label: "Mon profil",
+      icon: User,
+    },
   ];
 
   return (
