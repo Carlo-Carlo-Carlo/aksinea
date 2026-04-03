@@ -178,6 +178,60 @@ export default function DossierSettingsPage() {
           </button>
         </form>
 
+        {/* Clôture d'exercice */}
+        <div className="bg-white rounded-xl border border-gray-200 p-6 mb-8">
+          <h2 className="text-lg font-semibold text-gray-900 mb-2">Clôture d&apos;exercice</h2>
+          <p className="text-sm text-gray-500 mb-4">
+            Une fois un exercice clôturé, les mouvements antérieurs à la date de clôture
+            ne peuvent plus être ajoutés ni supprimés. Cette action est irréversible.
+          </p>
+
+          {exerciceCloture && (
+            <div className="bg-amber-50 text-amber-700 text-sm px-4 py-3 rounded-lg mb-4">
+              Dernier exercice clôturé au {new Date(exerciceCloture).toLocaleDateString("fr-FR")}
+            </div>
+          )}
+
+          <div className="flex items-center gap-3">
+            <select
+              value={closingYear}
+              onChange={(e) => setClosingYear(e.target.value)}
+              className="px-3 py-2.5 border border-gray-300 rounded-lg text-sm bg-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none"
+            >
+              {[...Array(5)].map((_, i) => {
+                const year = new Date().getFullYear() - i;
+                return (
+                  <option key={year} value={year}>
+                    Exercice {year}
+                  </option>
+                );
+              })}
+            </select>
+            <button
+              onClick={async () => {
+                if (!confirm("Clôturer l'exercice " + closingYear + " ? Les mouvements jusqu'au 31/12/" + closingYear + " seront verrouillés. Cette action est irréversible.")) return;
+                setClosing(true);
+                const closeDate = closingYear + "-12-31";
+                const { error: closeError } = await supabase
+                  .from("dossiers")
+                  .update({ exercice_cloture: closeDate })
+                  .eq("id", dossierId);
+                if (closeError) {
+                  setError("Erreur lors de la clôture");
+                } else {
+                  setExerciceCloture(closeDate);
+                  setSuccess("Exercice " + closingYear + " clôturé");
+                  setTimeout(() => setSuccess(""), 3000);
+                }
+                setClosing(false);
+              }}
+              disabled={closing}
+              className="px-4 py-2.5 bg-amber-600 text-white font-medium text-sm rounded-lg hover:bg-amber-700 disabled:opacity-50 transition-colors"
+            >
+              {closing ? "Clôture..." : "Clôturer"}
+            </button>
+          </div>
+        </div>
         {/* Zone danger : supprimer */}
         <div className="bg-white rounded-xl border border-red-200 p-6">
           <h2 className="text-lg font-semibold text-red-600 mb-2 flex items-center gap-2">
