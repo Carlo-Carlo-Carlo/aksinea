@@ -48,7 +48,9 @@ export async function GET(request: NextRequest) {
     .eq("type", "achat")
     .order("date", { ascending: true });
 
-  if (exercice) {
+  if (dateFrom && dateTo) {
+    achatsQuery = achatsQuery.gte("date", dateFrom).lte("date", dateTo);
+  } else if (exercice && exercice !== "all") {
     achatsQuery = achatsQuery
       .gte("date", `${exercice}-01-01`)
       .lte("date", `${exercice}-12-31`);
