@@ -39,7 +39,20 @@ export async function POST(request: NextRequest) {
       { status: 404 }
     );
   }
+// Vérifier la clôture d'exercice
+  const { data: dossierFull } = await supabase
+    .from("dossiers")
+    .select("exercice_cloture")
+    .eq("id", dossier_id)
+    .single();
 
+  if (dossierFull?.exercice_cloture && date <= dossierFull.exercice_cloture) {
+    return NextResponse.json(
+      { error: "Impossible d'ajouter un mouvement sur un exercice clôturé (clôturé au " + new Date(dossierFull.exercice_cloture).toLocaleDateString("fr-FR") + ")" },
+      { status: 400 }
+    );
+  }
+  
   try {
     if (type === "achat") {
       return await handleAchat(supabase, {
