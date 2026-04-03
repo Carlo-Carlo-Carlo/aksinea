@@ -12,9 +12,11 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
   }
 
-  const { searchParams } = new URL(request.url);
+ const { searchParams } = new URL(request.url);
   const dossierId = searchParams.get("dossier_id");
   const exercice = searchParams.get("exercice");
+  const dateFrom = searchParams.get("from");
+  const dateTo = searchParams.get("to");
 
   if (!dossierId) {
     return NextResponse.json(
