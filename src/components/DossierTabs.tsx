@@ -105,26 +105,24 @@ export function DossierTabs({
             Importer
           </Link>
           <div className="flex items-center gap-1 border border-gray-200 rounded-lg overflow-hidden">
-            <select
-              id="exercice-select"
-              defaultValue={new Date().getFullYear()}
-              className="px-2 py-2 text-sm text-gray-600 bg-white border-none outline-none cursor-pointer"
-            >
-              {[...Array(5)].map((_, i) => {
-                const year = new Date().getFullYear() - i;
-                return (
-                  <option key={year} value={year}>
-                    {year}
-                  </option>
-                );
-              })}
-              <option value="all">Tous</option>
-            </select>
+            <input
+              id="date-from"
+              type="date"
+              defaultValue={new Date().getFullYear() + "-01-01"}
+              className="px-2 py-2 text-sm text-gray-600 bg-white border-none outline-none"
+            />
+            <span className="text-sm text-gray-400">→</span>
+            <input
+              id="date-to"
+              type="date"
+              defaultValue={new Date().getFullYear() + "-12-31"}
+              className="px-2 py-2 text-sm text-gray-600 bg-white border-none outline-none"
+            />
             <button
               onClick={() => {
-                const sel = document.getElementById("exercice-select") as HTMLSelectElement;
-                const val = sel.value;
-                window.location.href = "/api/export-ecritures?dossier_id=" + dossierId + "&exercice=" + val;
+                const from = (document.getElementById("date-from") as HTMLInputElement).value;
+                const to = (document.getElementById("date-to") as HTMLInputElement).value;
+                window.location.href = "/api/export-ecritures?dossier_id=" + dossierId + "&from=" + from + "&to=" + to;
               }}
               className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors border-l border-gray-200"
             >
