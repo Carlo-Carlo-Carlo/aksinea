@@ -245,7 +245,8 @@ export async function GET(request: NextRequest) {
     BOM +
     ecritures.map((row) => row.join(";")).join("\n");
 
-  const filename = `ecritures_${dossier.name.replace(/\s+/g, "_")}_${exercice || "all"}.csv`;
+  const period = dateFrom && dateTo ? `${dateFrom}_${dateTo}` : exercice || "all";
+  const filename = `ecritures_${dossier.name.replace(/\s+/g, "_")}_${period}.csv`;
 
   return new NextResponse(csvContent, {
     headers: {
