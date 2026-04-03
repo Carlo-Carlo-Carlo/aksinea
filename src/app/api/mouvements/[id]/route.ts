@@ -32,6 +32,19 @@ export async function DELETE(
   }
 
   const { dossier_id, titre_id } = mouvement;
+  // Vérifier la clôture d'exercice
+  const { data: dossierCheck } = await supabase
+    .from("dossiers")
+    .select("exercice_cloture")
+    .eq("id", dossier_id)
+    .single();
+
+  if (dossierCheck?.exercice_cloture && mouvement.date <= dossierCheck.exercice_cloture) {
+    return NextResponse.json(
+      { error: "Impossible de supprimer un mouvement sur un exercice clôturé" },
+      { status: 400 }
+    );
+  }
 
   try {
     // 1. Supprimer toutes les cessions liées à ce titre dans ce dossier
