@@ -65,7 +65,9 @@ export async function GET(request: NextRequest) {
     .eq("dossier_id", dossierId)
     .order("date_cession", { ascending: true });
 
-  if (exercice) {
+  if (dateFrom && dateTo) {
+    cessionsQuery = cessionsQuery.gte("date_cession", dateFrom).lte("date_cession", dateTo);
+  } else if (exercice && exercice !== "all") {
     cessionsQuery = cessionsQuery
       .gte("date_cession", `${exercice}-01-01`)
       .lte("date_cession", `${exercice}-12-31`);
