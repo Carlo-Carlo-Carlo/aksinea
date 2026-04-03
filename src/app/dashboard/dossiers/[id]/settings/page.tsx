@@ -36,6 +36,7 @@ export default function DossierSettingsPage() {
         setName(data.name);
         setSiren(data.siren || "");
         setNotes(data.notes || "");
+        setExerciceCloture(data.exercice_cloture || null);
       }
     }
     load();
