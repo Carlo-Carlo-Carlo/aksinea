@@ -24,6 +24,7 @@ export function DossierTabs({
   portefeuille,
   mouvements,
   cessions,
+  userPlan = "free",
 }: DossierTabsProps) {
   const [activeTab, setActiveTab] = useState("portefeuille");
 
