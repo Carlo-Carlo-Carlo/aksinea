@@ -30,6 +30,25 @@ export default function NewDossierPage() {
       return;
     }
 
+    // Vérifier le plan et le nombre de dossiers
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("plan")
+      .eq("id", user.id)
+      .single();
+
+    if (!profile || profile.plan === "free") {
+      const { count } = await supabase
+        .from("dossiers")
+        .select("id", { count: "exact", head: true })
+        .eq("user_id", user.id);
+
+      if ((count || 0) >= 1) {
+        setError("Le plan gratuit est limité à 1 dossier. Passez au plan Pro pour créer des dossiers illimités.");
+        setLoading(false);
+        return;
+      }
+    }
     const { data, error: insertError } = await supabase
       .from("dossiers")
       .insert({
