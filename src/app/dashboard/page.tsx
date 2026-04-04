@@ -16,11 +16,13 @@ export default async function DashboardPage() {
     .order("created_at", { ascending: false });
 
   const nbDossiers = dossiers?.length || 0;
-
-  // Compter les titres suivis (tous dossiers)
   const dossierIds = (dossiers || []).map((d) => d.id);
+
   let nbTitres = 0;
   let nbMouvementsMois = 0;
+
+  // Stats par dossier
+  const dossierStats: Record<string, { titres: number; mouvements: number; resultat: number }> = {};
 
   if (dossierIds.length > 0) {
     const { count: titresCount } = await supabase
@@ -30,7 +32,6 @@ export default async function DashboardPage() {
 
     nbTitres = titresCount || 0;
 
-    // Mouvements ce mois-ci
     const now = new Date();
     const debutMois = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-01`;
     const { count: mvtCount } = await supabase
@@ -40,7 +41,43 @@ export default async function DashboardPage() {
       .gte("created_at", debutMois);
 
     nbMouvementsMois = mvtCount || 0;
+
+    // Titres par dossier
+    const { data: titresParDossier } = await supabase
+      .from("titres")
+      .select("dossier_id")
+      .in("dossier_id", dossierIds);
+
+    // Mouvements par dossier
+    const { data: mvtParDossier } = await supabase
+      .from("mouvements")
+      .select("dossier_id")
+      .in("dossier_id", dossierIds);
+
+    // Résultat cessions par dossier (exercice en cours)
+    const debutAnnee = `${now.getFullYear()}-01-01`;
+    const finAnnee = `${now.getFullYear()}-12-31`;
+    const { data: cessionsParDossier } = await supabase
+      .from("cessions")
+      .select("dossier_id, plus_moins_value")
+      .in("dossier_id", dossierIds)
+      .gte("date_cession", debutAnnee)
+      .lte("date_cession", finAnnee);
+
+    // Agréger
+    for (const id of dossierIds) {
+      const titresCount = (titresParDossier || []).filter((t) => t.dossier_id === id).length;
+      const mvtCount = (mvtParDossier || []).filter((m) => m.dossier_id === id).length;
+      const resultat = (cessionsParDossier || [])
+        .filter((c) => c.dossier_id === id)
+        .reduce((sum, c) => sum + parseFloat(c.plus_moins_value || 0), 0);
+
+      dossierStats[id] = { titres: titresCount, mouvements: mvtCount, resultat: Math.round(resultat * 100) / 100 };
+    }
   }
+
+  const formatCurrency = (n: number) =>
+    new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" }).format(n);
 
   return (
     <div>
@@ -61,7 +98,7 @@ export default async function DashboardPage() {
         </Link>
       </div>
 
-      {/* Stats */}
+      {/* Stats globales */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <div className="bg-white rounded-xl border border-gray-200 p-6">
           <div className="flex items-center gap-3">
@@ -100,7 +137,7 @@ export default async function DashboardPage() {
         </div>
       </div>
 
-      {/* Liste des dossiers récents */}
+      {/* Liste des dossiers */}
       {nbDossiers === 0 ? (
         <div className="bg-white rounded-xl border border-gray-200 p-12 text-center">
           <FolderOpen className="w-12 h-12 text-gray-300 mx-auto mb-4" />
@@ -126,30 +163,45 @@ export default async function DashboardPage() {
             </h2>
           </div>
           <div className="divide-y divide-gray-100">
-            {dossiers?.map((dossier) => (
-              <Link
-                key={dossier.id}
-                href={`/dashboard/dossiers/${dossier.id}`}
-                className="flex items-center justify-between px-6 py-4 hover:bg-gray-50 transition-colors"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 bg-primary-100 rounded-lg flex items-center justify-center">
-                    <FolderOpen className="w-4 h-4 text-primary-600" />
+            {dossiers?.map((dossier) => {
+              const stats = dossierStats[dossier.id] || { titres: 0, mouvements: 0, resultat: 0 };
+              return (
+                <Link
+                  key={dossier.id}
+                  href={`/dashboard/dossiers/${dossier.id}`}
+                  className="flex items-center justify-between px-6 py-4 hover:bg-gray-50 transition-colors"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-9 h-9 bg-primary-100 rounded-lg flex items-center justify-center">
+                      <FolderOpen className="w-4 h-4 text-primary-600" />
+                    </div>
+                    <div>
+                      <p className="font-medium text-gray-900">{dossier.name}</p>
+                      <p className="text-sm text-gray-500">
+                        {dossier.siren ? `SIREN ${dossier.siren}` : "Pas de SIREN"}
+                        {dossier.notes ? ` • ${dossier.notes}` : ""}
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="font-medium text-gray-900">{dossier.name}</p>
-                    <p className="text-sm text-gray-500">
-                      {dossier.siren
-                        ? `SIREN ${dossier.siren}`
-                        : "Pas de SIREN"}
-                    </p>
+                  <div className="flex items-center gap-6 text-sm">
+                    <div className="text-center">
+                      <p className="text-gray-400 text-xs">Titres</p>
+                      <p className="font-medium text-gray-700">{stats.titres}</p>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-gray-400 text-xs">Mouvements</p>
+                      <p className="font-medium text-gray-700">{stats.mouvements}</p>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-gray-400 text-xs">Résultat {new Date().getFullYear()}</p>
+                      <p className={`font-medium ${stats.resultat >= 0 ? "text-green-600" : "text-red-600"}`}>
+                        {stats.resultat !== 0 ? (stats.resultat > 0 ? "+" : "") + formatCurrency(stats.resultat) : "—"}
+                      </p>
+                    </div>
                   </div>
-                </div>
-                <span className="text-sm text-gray-400">
-                  {new Date(dossier.created_at).toLocaleDateString("fr-FR")}
-                </span>
-              </Link>
-            ))}
+                </Link>
+              );
+            })}
           </div>
         </div>
       )}
