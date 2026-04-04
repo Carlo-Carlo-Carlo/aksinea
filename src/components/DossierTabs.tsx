@@ -16,6 +16,7 @@ interface DossierTabsProps {
   portefeuille: any[];
   mouvements: any[];
   cessions: any[];
+  userPlan?: string;
 }
 
 export function DossierTabs({
