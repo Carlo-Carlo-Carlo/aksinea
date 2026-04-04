@@ -13,6 +13,11 @@ export default async function DossierPage({ params }: PageProps) {
   const {
     data: { user },
   } = await supabase.auth.getUser();
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("plan")
+    .eq("id", user!.id)
+    .single();
 
   // Récupérer le dossier
   const { data: dossier } = await supabase
