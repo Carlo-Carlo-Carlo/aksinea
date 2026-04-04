@@ -122,6 +122,10 @@ export function DossierTabs({
             />
             <button
               onClick={() => {
+                if (userPlan === "free") {
+                  alert("L'export des écritures est réservé au plan Pro. Rendez-vous dans votre profil pour upgrader.");
+                  return;
+                }
                 const from = (document.getElementById("date-from") as HTMLInputElement).value;
                 const to = (document.getElementById("date-to") as HTMLInputElement).value;
                 window.location.href = "/api/export-ecritures?dossier_id=" + dossierId + "&from=" + from + "&to=" + to;
@@ -130,6 +134,7 @@ export function DossierTabs({
             >
               <Download className="w-4 h-4" />
               Écritures
+              {userPlan === "free" && <span className="text-xs bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded">Pro</span>}
             </button>
           </div>
         </div>
