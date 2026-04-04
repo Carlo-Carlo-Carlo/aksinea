@@ -80,11 +80,12 @@ export default async function DossierPage({ params }: PageProps) {
       </div>
 
       {/* Onglets */}
-      <DossierTabs
+     <DossierTabs
         dossierId={dossier.id}
         portefeuille={portefeuille || []}
         mouvements={mouvements || []}
         cessions={cessions || []}
+        userPlan={profile?.plan || "free"}
       />
     </div>
   );
