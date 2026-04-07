@@ -18,6 +18,7 @@ interface DossierTabsProps {
   mouvements: any[];
   cessions: any[];
   titres?: any[];
+  recapExercices?: any[];
   userPlan?: string;
 }
 
