@@ -57,11 +57,19 @@ export default async function DossierPage({ params }: PageProps) {
     .select("id, name, isin, type, compte_comptable, regime_fiscal")
     .eq("dossier_id", dossier.id);
 // Récupérer le récap par exercice
-  const { data: recapExercices } = await supabase
-    .from("v_recap_cessions")
-    .select("*")
-    .eq("dossier_id", dossier.id)
-    .order("exercice", { ascending: false });
+  let recapExercices: any[] = [];
+  try {
+    const { data: recapData, error: recapError } = await supabase
+      .from("v_recap_cessions")
+      .select("*")
+      .eq("dossier_id", dossier.id);
+
+    if (!recapError && recapData) {
+      recapExercices = recapData;
+    }
+  } catch {
+    recapExercices = [];
+  }
   
   return (
     <div>
