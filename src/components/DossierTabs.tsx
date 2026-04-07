@@ -8,6 +8,7 @@ import {
   Plus,
   Upload,
   Download,
+  FileText,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -16,6 +17,7 @@ interface DossierTabsProps {
   portefeuille: any[];
   mouvements: any[];
   cessions: any[];
+  titres?: any[];
   userPlan?: string;
 }
 
@@ -24,101 +26,97 @@ export function DossierTabs({
   portefeuille,
   mouvements,
   cessions,
+  titres = [],
   userPlan = "free",
 }: DossierTabsProps) {
   const [activeTab, setActiveTab] = useState("portefeuille");
+  const [deleting, setDeleting] = useState<string | null>(null);
+
+  const handleDelete = async (id: string) => {
+    if (!confirm("Supprimer ce mouvement ? Le calcul FIFO sera recalculé automatiquement.")) return;
+    setDeleting(id);
+    try {
+      const res = await fetch("/api/mouvements/" + id, { method: "DELETE" });
+      if (res.ok) {
+        window.location.reload();
+      } else {
+        const data = await res.json();
+        alert(data.error || "Erreur lors de la suppression");
+      }
+    } catch {
+      alert("Erreur réseau");
+    }
+    setDeleting(null);
+  };
 
   const tabs = [
-    {
-      id: "portefeuille",
-      label: "Portefeuille",
-      icon: Briefcase,
-      count: portefeuille.length,
-    },
-    {
-      id: "mouvements",
-      label: "Mouvements",
-      icon: ArrowUpDown,
-      count: mouvements.length,
-    },
-    {
-      id: "cessions",
-      label: "Cessions",
-      icon: Receipt,
-      count: cessions.length,
-    },
+    { id: "portefeuille", label: "Portefeuille", icon: Briefcase, count: portefeuille.length },
+    { id: "mouvements", label: "Mouvements", icon: ArrowUpDown, count: mouvements.length },
+    { id: "cessions", label: "Cessions", icon: Receipt, count: cessions.length },
+    { id: "synthese", label: "Synthèse fiscale", icon: FileText, count: null },
   ];
 
   const formatNumber = (n: number) =>
-    new Intl.NumberFormat("fr-FR", {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    }).format(n);
+    new Intl.NumberFormat("fr-FR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n);
 
   const formatCurrency = (n: number) =>
-    new Intl.NumberFormat("fr-FR", {
-      style: "currency",
-      currency: "EUR",
-    }).format(n);
+    new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" }).format(n);
 
   return (
     <div>
       <div className="flex items-center justify-between border-b border-gray-200 mb-6">
-        <div className="flex gap-0">
+        <div className="flex gap-0 overflow-x-auto">
           {tabs.map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`flex items-center gap-2 px-5 py-3 text-sm font-medium border-b-2 transition-colors ${
+              className={`flex items-center gap-2 px-4 md:px-5 py-3 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${
                 activeTab === tab.id
                   ? "border-primary-600 text-primary-600"
                   : "border-transparent text-gray-500 hover:text-gray-700"
               }`}
             >
               <tab.icon className="w-4 h-4" />
-              {tab.label}
-              <span
-                className={`ml-1 text-xs px-2 py-0.5 rounded-full ${
-                  activeTab === tab.id
-                    ? "bg-primary-100 text-primary-700"
-                    : "bg-gray-100 text-gray-500"
-                }`}
-              >
-                {tab.count}
-              </span>
+              <span className="hidden sm:inline">{tab.label}</span>
+              {tab.count !== null && (
+                <span className={`ml-1 text-xs px-2 py-0.5 rounded-full ${
+                  activeTab === tab.id ? "bg-primary-100 text-primary-700" : "bg-gray-100 text-gray-500"
+                }`}>
+                  {tab.count}
+                </span>
+              )}
             </button>
           ))}
         </div>
 
-        {/* Actions */}
         <div className="flex gap-2 pb-2">
           <Link
             href={`/dashboard/dossiers/${dossierId}/mouvement`}
             className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-primary-600 border border-primary-200 rounded-lg hover:bg-primary-50 transition-colors"
           >
             <Plus className="w-4 h-4" />
-            Mouvement
+            <span className="hidden sm:inline">Mouvement</span>
           </Link>
           <Link
             href={`/dashboard/dossiers/${dossierId}/import`}
             className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-gray-600 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
           >
             <Upload className="w-4 h-4" />
-            Importer
+            <span className="hidden sm:inline">Importer</span>
           </Link>
           <div className="flex items-center gap-1 border border-gray-200 rounded-lg overflow-hidden">
             <input
               id="date-from"
               type="date"
               defaultValue={new Date().getFullYear() + "-01-01"}
-              className="px-2 py-2 text-sm text-gray-600 bg-white border-none outline-none"
+              className="px-2 py-2 text-sm text-gray-600 bg-white border-none outline-none w-32"
             />
             <span className="text-sm text-gray-400">→</span>
             <input
               id="date-to"
               type="date"
               defaultValue={new Date().getFullYear() + "-12-31"}
-              className="px-2 py-2 text-sm text-gray-600 bg-white border-none outline-none"
+              className="px-2 py-2 text-sm text-gray-600 bg-white border-none outline-none w-32"
             />
             <button
               onClick={() => {
@@ -133,7 +131,7 @@ export function DossierTabs({
               className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors border-l border-gray-200"
             >
               <Download className="w-4 h-4" />
-              Écritures
+              <span className="hidden sm:inline">Écritures</span>
               {userPlan === "free" && <span className="text-xs bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded">Pro</span>}
             </button>
           </div>
@@ -144,31 +142,24 @@ export function DossierTabs({
         <PortefeuilleTab portefeuille={portefeuille} formatCurrency={formatCurrency} formatNumber={formatNumber} />
       )}
       {activeTab === "mouvements" && (
-        <MouvementsTab mouvements={mouvements} formatCurrency={formatCurrency} formatNumber={formatNumber} dossierId={dossierId} />
+        <MouvementsTab mouvements={mouvements} formatCurrency={formatCurrency} formatNumber={formatNumber} deleting={deleting} onDelete={handleDelete} />
       )}
       {activeTab === "cessions" && (
         <CessionsTab cessions={cessions} formatCurrency={formatCurrency} formatNumber={formatNumber} />
+      )}
+      {activeTab === "synthese" && (
+        <SyntheseFiscaleTab portefeuille={portefeuille} cessions={cessions} titres={titres} formatCurrency={formatCurrency} formatNumber={formatNumber} userPlan={userPlan} />
       )}
     </div>
   );
 }
 
-function PortefeuilleTab({
-  portefeuille,
-  formatCurrency,
-  formatNumber,
-}: {
-  portefeuille: any[];
-  formatCurrency: (n: number) => string;
-  formatNumber: (n: number) => string;
-}) {
+function PortefeuilleTab({ portefeuille, formatCurrency, formatNumber }: { portefeuille: any[]; formatCurrency: (n: number) => string; formatNumber: (n: number) => string }) {
   if (portefeuille.length === 0) {
     return (
       <div className="bg-white rounded-xl border border-gray-200 p-12 text-center">
         <Briefcase className="w-10 h-10 text-gray-300 mx-auto mb-3" />
-        <p className="text-gray-500">
-          Aucun titre en portefeuille. Ajoutez un mouvement d&apos;achat pour commencer.
-        </p>
+        <p className="text-gray-500">Aucun titre en portefeuille. Ajoutez un mouvement d&apos;achat pour commencer.</p>
       </div>
     );
   }
@@ -194,24 +185,22 @@ function PortefeuilleTab({
                 <p className="font-medium text-gray-900">{row.titre_name}</p>
                 {row.isin && <p className="text-xs text-gray-400">{row.isin}</p>}
               </td>
-              <td className="px-6 py-4">
-                <span className="text-sm text-gray-600 capitalize">{row.titre_type}</span>
-              </td>
+              <td className="px-6 py-4"><span className="text-sm text-gray-600 capitalize">{row.titre_type}</span></td>
               <td className="px-6 py-4 text-right font-mono text-sm">{formatNumber(row.quantite_totale)}</td>
               <td className="px-6 py-4 text-right font-mono text-sm">{formatCurrency(row.pru_fifo)}</td>
               <td className="px-6 py-4 text-right font-mono text-sm font-medium">{formatCurrency(row.valeur_acquisition_totale)}</td>
               <td className="px-6 py-4 text-right text-sm text-gray-500">{row.compte_comptable}</td>
               <td className="px-6 py-4 text-right">
                 <span className={`text-xs px-2 py-0.5 rounded-full ${
-                  row.regime_fiscal === 'opcvm_taxable' ? 'bg-red-100 text-red-700' :
-                  row.regime_fiscal === 'opcvm_actions_90' ? 'bg-green-100 text-green-700' :
-                  row.regime_fiscal === 'fcpr_fcpi_fip' ? 'bg-green-100 text-green-700' :
-                  'bg-gray-100 text-gray-600'
+                  row.regime_fiscal === "opcvm_taxable" ? "bg-red-100 text-red-700" :
+                  row.regime_fiscal === "opcvm_actions_90" ? "bg-green-100 text-green-700" :
+                  row.regime_fiscal === "fcpr_fcpi_fip" ? "bg-green-100 text-green-700" :
+                  "bg-gray-100 text-gray-600"
                 }`}>
-                  {row.regime_fiscal === 'standard' ? 'Standard' :
-                   row.regime_fiscal === 'opcvm_taxable' ? 'OPCVM taxable' :
-                   row.regime_fiscal === 'opcvm_actions_90' ? 'OPCVM 90%+' :
-                   row.regime_fiscal === 'fcpr_fcpi_fip' ? 'FCPR/FCPI/FIP' : '—'}
+                  {row.regime_fiscal === "standard" ? "Standard" :
+                   row.regime_fiscal === "opcvm_taxable" ? "OPCVM taxable" :
+                   row.regime_fiscal === "opcvm_actions_90" ? "OPCVM 90%+" :
+                   row.regime_fiscal === "fcpr_fcpi_fip" ? "FCPR/FCPI/FIP" : "—"}
                 </span>
               </td>
             </tr>
@@ -222,43 +211,12 @@ function PortefeuilleTab({
   );
 }
 
-function MouvementsTab({
-  mouvements,
-  formatCurrency,
-  formatNumber,
-  dossierId,
-}: {
-  mouvements: any[];
-  formatCurrency: (n: number) => string;
-  formatNumber: (n: number) => string;
-  dossierId: string;
-}) {
-  const [deleting, setDeleting] = useState<string | null>(null);
-
-  const handleDelete = async (id: string) => {
-    if (!confirm("Supprimer ce mouvement ? Le calcul FIFO sera recalculé automatiquement.")) return;
-    setDeleting(id);
-    try {
-      const res = await fetch("/api/mouvements/" + id, { method: "DELETE" });
-      if (res.ok) {
-        window.location.reload();
-      } else {
-        const data = await res.json();
-        alert(data.error || "Erreur lors de la suppression");
-      }
-    } catch {
-      alert("Erreur réseau");
-    }
-    setDeleting(null);
-  };
-
+function MouvementsTab({ mouvements, formatCurrency, formatNumber, deleting, onDelete }: { mouvements: any[]; formatCurrency: (n: number) => string; formatNumber: (n: number) => string; deleting: string | null; onDelete: (id: string) => void }) {
   if (mouvements.length === 0) {
     return (
       <div className="bg-white rounded-xl border border-gray-200 p-12 text-center">
         <ArrowUpDown className="w-10 h-10 text-gray-300 mx-auto mb-3" />
-        <p className="text-gray-500">
-          Aucun mouvement enregistré. Ajoutez un achat ou une vente, ou importez un fichier.
-        </p>
+        <p className="text-gray-500">Aucun mouvement enregistré. Ajoutez un achat ou une vente, ou importez un fichier.</p>
       </div>
     );
   }
@@ -289,20 +247,13 @@ function MouvementsTab({
                   {mvt.type === "achat" ? "Achat" : "Vente"}
                 </span>
               </td>
-              <td className="px-6 py-4">
-                <p className="text-sm font-medium text-gray-900">{mvt.titres?.name}</p>
-              </td>
+              <td className="px-6 py-4"><p className="text-sm font-medium text-gray-900">{mvt.titres?.name}</p></td>
               <td className="px-6 py-4 text-right font-mono text-sm">{formatNumber(mvt.quantite)}</td>
               <td className="px-6 py-4 text-right font-mono text-sm">{formatCurrency(mvt.prix_unitaire)}</td>
               <td className="px-6 py-4 text-right font-mono text-sm text-gray-500">{formatCurrency(mvt.frais)}</td>
               <td className="px-6 py-4 text-right font-mono text-sm font-medium">{formatCurrency(mvt.montant_total)}</td>
               <td className="px-4 py-4">
-                <button
-                  onClick={() => handleDelete(mvt.id)}
-                  disabled={deleting === mvt.id}
-                  className="text-gray-400 hover:text-red-600 transition-colors disabled:opacity-50"
-                  title="Supprimer ce mouvement"
-                >
+                <button onClick={() => onDelete(mvt.id)} disabled={deleting === mvt.id} className="text-gray-400 hover:text-red-600 transition-colors disabled:opacity-50" title="Supprimer ce mouvement">
                   {deleting === mvt.id ? "..." : "✕"}
                 </button>
               </td>
@@ -314,34 +265,18 @@ function MouvementsTab({
   );
 }
 
-function CessionsTab({
-  cessions,
-  formatCurrency,
-  formatNumber,
-}: {
-  cessions: any[];
-  formatCurrency: (n: number) => string;
-  formatNumber: (n: number) => string;
-}) {
+function CessionsTab({ cessions, formatCurrency, formatNumber }: { cessions: any[]; formatCurrency: (n: number) => string; formatNumber: (n: number) => string }) {
   if (cessions.length === 0) {
     return (
       <div className="bg-white rounded-xl border border-gray-200 p-12 text-center">
         <Receipt className="w-10 h-10 text-gray-300 mx-auto mb-3" />
-        <p className="text-gray-500">
-          Aucune cession enregistrée. Les cessions apparaîtront ici après l&apos;enregistrement d&apos;une vente.
-        </p>
+        <p className="text-gray-500">Aucune cession enregistrée. Les cessions apparaîtront ici après l&apos;enregistrement d&apos;une vente.</p>
       </div>
     );
   }
 
-  const totalPV = cessions.reduce(
-    (sum: number, c: any) => sum + (c.plus_moins_value > 0 ? c.plus_moins_value : 0),
-    0
-  );
-  const totalMV = cessions.reduce(
-    (sum: number, c: any) => sum + (c.plus_moins_value < 0 ? c.plus_moins_value : 0),
-    0
-  );
+  const totalPV = cessions.reduce((sum: number, c: any) => sum + (c.plus_moins_value > 0 ? c.plus_moins_value : 0), 0);
+  const totalMV = cessions.reduce((sum: number, c: any) => sum + (c.plus_moins_value < 0 ? c.plus_moins_value : 0), 0);
   const totalNet = totalPV + totalMV;
 
   return (
@@ -357,12 +292,9 @@ function CessionsTab({
         </div>
         <div className="bg-gray-50 rounded-lg px-4 py-3">
           <p className="text-xs text-gray-600 font-medium">Résultat net</p>
-          <p className={`text-lg font-bold ${totalNet >= 0 ? "text-green-700" : "text-red-700"}`}>
-            {formatCurrency(totalNet)}
-          </p>
+          <p className={`text-lg font-bold ${totalNet >= 0 ? "text-green-700" : "text-red-700"}`}>{formatCurrency(totalNet)}</p>
         </div>
       </div>
-
       <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
         <table className="w-full">
           <thead>
@@ -383,9 +315,7 @@ function CessionsTab({
                 <td className="px-6 py-4 text-right font-mono text-sm">{formatNumber(c.quantite)}</td>
                 <td className="px-6 py-4 text-right font-mono text-sm">{formatCurrency(c.prix_achat_unitaire)}</td>
                 <td className="px-6 py-4 text-right font-mono text-sm">{formatCurrency(c.prix_vente_unitaire)}</td>
-                <td className={`px-6 py-4 text-right font-mono text-sm font-medium ${
-                  c.plus_moins_value >= 0 ? "text-green-600" : "text-red-600"
-                }`}>
+                <td className={`px-6 py-4 text-right font-mono text-sm font-medium ${c.plus_moins_value >= 0 ? "text-green-600" : "text-red-600"}`}>
                   {c.plus_moins_value >= 0 ? "+" : ""}{formatCurrency(c.plus_moins_value)}
                 </td>
               </tr>
@@ -393,6 +323,153 @@ function CessionsTab({
           </tbody>
         </table>
       </div>
+    </div>
+  );
+}
+
+function SyntheseFiscaleTab({ portefeuille, cessions, titres, formatCurrency, formatNumber, userPlan }: { portefeuille: any[]; cessions: any[]; titres: any[]; formatCurrency: (n: number) => string; formatNumber: (n: number) => string; userPlan: string }) {
+  if (userPlan === "free") {
+    return (
+      <div className="bg-white rounded-xl border border-gray-200 p-12 text-center">
+        <FileText className="w-10 h-10 text-gray-300 mx-auto mb-3" />
+        <p className="text-gray-900 font-medium mb-2">Synthèse fiscale</p>
+        <p className="text-gray-500 mb-4">Cette fonctionnalité est réservée au plan Pro.</p>
+        <span className="text-xs bg-amber-100 text-amber-700 px-3 py-1 rounded-full font-medium">Pro</span>
+      </div>
+    );
+  }
+
+  const regimeLabels: Record<string, string> = {
+    standard: "Titres standard (actions, obligations)",
+    opcvm_taxable: "OPCVM taxables (écarts latents imposés)",
+    opcvm_actions_90: "OPCVM actions 90%+ (exemptés)",
+    fcpr_fcpi_fip: "FCPR / FCPI / FIP (exemptés)",
+  };
+
+  const regimeColors: Record<string, string> = {
+    standard: "bg-gray-50 border-gray-200",
+    opcvm_taxable: "bg-red-50 border-red-200",
+    opcvm_actions_90: "bg-green-50 border-green-200",
+    fcpr_fcpi_fip: "bg-green-50 border-green-200",
+  };
+
+  const regimeBadgeColors: Record<string, string> = {
+    standard: "bg-gray-100 text-gray-700",
+    opcvm_taxable: "bg-red-100 text-red-700",
+    opcvm_actions_90: "bg-green-100 text-green-700",
+    fcpr_fcpi_fip: "bg-green-100 text-green-700",
+  };
+
+  const regimeDescriptions: Record<string, string> = {
+    standard: "Plus-values imposées uniquement lors de la cession effective. Pas d'écart latent à déclarer.",
+    opcvm_taxable: "Les écarts de valeur liquidative (plus ET moins-values latentes) doivent être intégrés au résultat fiscal chaque année (art. 209-0 A CGI).",
+    opcvm_actions_90: "Exemptés de la taxation annuelle des écarts latents car investis à 90%+ en actions.",
+    fcpr_fcpi_fip: "Exemptés de la taxation annuelle des écarts latents.",
+  };
+
+  const regimes = ["standard", "opcvm_taxable", "opcvm_actions_90", "fcpr_fcpi_fip"];
+  const currentYear = new Date().getFullYear();
+
+  const synthese = regimes.map((regime) => {
+    const titresInRegime = portefeuille.filter((p: any) => (p.regime_fiscal || "standard") === regime);
+    const cessionsInRegime = cessions.filter((c: any) => {
+      const titreMeta = titres.find((t: any) => t.id === c.titre_id);
+      return (titreMeta?.regime_fiscal || "standard") === regime;
+    });
+
+    const cessionsThisYear = cessionsInRegime.filter((c: any) => new Date(c.date_cession).getFullYear() === currentYear);
+
+    const nbTitres = titresInRegime.length;
+    const valeurAcquisition = titresInRegime.reduce((sum: number, p: any) => sum + parseFloat(p.valeur_acquisition_totale || 0), 0);
+    const pvRealisees = cessionsThisYear.reduce((sum: number, c: any) => sum + (c.plus_moins_value > 0 ? parseFloat(c.plus_moins_value) : 0), 0);
+    const mvRealisees = cessionsThisYear.reduce((sum: number, c: any) => sum + (c.plus_moins_value < 0 ? parseFloat(c.plus_moins_value) : 0), 0);
+    const resultatNet = pvRealisees + mvRealisees;
+
+    return { regime, nbTitres, valeurAcquisition, pvRealisees, mvRealisees, resultatNet, hasTitres: nbTitres > 0 || cessionsThisYear.length > 0 };
+  });
+
+  const syntheseActive = synthese.filter((s) => s.hasTitres);
+  const totalResultat = synthese.reduce((sum, s) => sum + s.resultatNet, 0);
+  const totalValeur = synthese.reduce((sum, s) => sum + s.valeurAcquisition, 0);
+
+  return (
+    <div className="space-y-6">
+      {/* Résumé global */}
+      <div className="grid grid-cols-2 gap-4">
+        <div className="bg-white rounded-xl border border-gray-200 p-6">
+          <p className="text-sm text-gray-500 mb-1">Valeur d&apos;acquisition totale en portefeuille</p>
+          <p className="text-2xl font-bold text-gray-900">{formatCurrency(totalValeur)}</p>
+        </div>
+        <div className="bg-white rounded-xl border border-gray-200 p-6">
+          <p className="text-sm text-gray-500 mb-1">Résultat net des cessions {currentYear}</p>
+          <p className={`text-2xl font-bold ${totalResultat >= 0 ? "text-green-700" : "text-red-700"}`}>
+            {totalResultat !== 0 ? (totalResultat > 0 ? "+" : "") + formatCurrency(totalResultat) : "—"}
+          </p>
+        </div>
+      </div>
+
+      {/* Détail par régime */}
+      {syntheseActive.length === 0 ? (
+        <div className="bg-white rounded-xl border border-gray-200 p-12 text-center">
+          <p className="text-gray-500">Aucun titre en portefeuille. Ajoutez des mouvements pour voir la synthèse fiscale.</p>
+        </div>
+      ) : (
+        syntheseActive.map((s) => (
+          <div key={s.regime} className={`rounded-xl border p-6 ${regimeColors[s.regime]}`}>
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <div className="flex items-center gap-2 mb-1">
+                  <h3 className="font-semibold text-gray-900">{regimeLabels[s.regime]}</h3>
+                  <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${regimeBadgeColors[s.regime]}`}>
+                    {s.nbTitres} titre{s.nbTitres > 1 ? "s" : ""}
+                  </span>
+                </div>
+                <p className="text-sm text-gray-500">{regimeDescriptions[s.regime]}</p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div>
+                <p className="text-xs text-gray-500 mb-1">Valeur d&apos;acquisition</p>
+                <p className="text-lg font-semibold text-gray-900">{formatCurrency(s.valeurAcquisition)}</p>
+              </div>
+              <div>
+                <p className="text-xs text-gray-500 mb-1">Plus-values réalisées {currentYear}</p>
+                <p className="text-lg font-semibold text-green-600">{s.pvRealisees > 0 ? "+" + formatCurrency(s.pvRealisees) : "—"}</p>
+              </div>
+              <div>
+                <p className="text-xs text-gray-500 mb-1">Moins-values réalisées {currentYear}</p>
+                <p className="text-lg font-semibold text-red-600">{s.mvRealisees < 0 ? formatCurrency(s.mvRealisees) : "—"}</p>
+              </div>
+              <div>
+                <p className="text-xs text-gray-500 mb-1">Résultat net {currentYear}</p>
+                <p className={`text-lg font-semibold ${s.resultatNet >= 0 ? "text-green-700" : "text-red-700"}`}>
+                  {s.resultatNet !== 0 ? (s.resultatNet > 0 ? "+" : "") + formatCurrency(s.resultatNet) : "—"}
+                </p>
+              </div>
+            </div>
+
+            {s.regime === "opcvm_taxable" && (
+              <div className="mt-4 pt-4 border-t border-red-200">
+                <p className="text-sm text-red-700 font-medium">
+                  Attention : les écarts de valeur liquidative de ces titres doivent être intégrés
+                  au résultat fiscal à la clôture, même sans cession. Pensez à renseigner la valeur
+                  liquidative à la date de clôture.
+                </p>
+              </div>
+            )}
+
+            {(s.regime === "opcvm_actions_90" || s.regime === "fcpr_fcpi_fip") && (
+              <div className="mt-4 pt-4 border-t border-green-200">
+                <p className="text-sm text-green-700 font-medium">
+                  Ces titres sont exemptés de la taxation annuelle des écarts latents.
+                  Seules les plus-values de cession sont imposables.
+                </p>
+              </div>
+            )}
+          </div>
+        ))
+      )}
     </div>
   );
 }
