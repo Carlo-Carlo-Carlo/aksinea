@@ -44,13 +44,18 @@ export default async function DossierPage({ params }: PageProps) {
     .eq("dossier_id", dossier.id)
     .order("date", { ascending: false });
 
-  // Récupérer les cessions
+ // Récupérer les cessions
   const { data: cessions } = await supabase
     .from("cessions")
-    .select("*, titres(name, isin)")
+    .select("*, titres(name, isin, regime_fiscal)")
     .eq("dossier_id", dossier.id)
     .order("date_cession", { ascending: false });
 
+  // Récupérer les titres avec leurs lots pour la synthèse fiscale
+  const { data: titresWithLots } = await supabase
+    .from("titres")
+    .select("id, name, isin, type, compte_comptable, regime_fiscal")
+    .eq("dossier_id", dossier.id);
   return (
     <div>
       {/* Header */}
