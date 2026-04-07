@@ -57,6 +57,7 @@ export function DossierTabs({
     { id: "mouvements", label: "Mouvements", icon: ArrowUpDown, count: mouvements.length },
     { id: "cessions", label: "Cessions", icon: Receipt, count: cessions.length },
     { id: "synthese", label: "Synthèse fiscale", icon: FileText, count: null },
+    { id: "historique", label: "Historique", icon: History, count: null },
   ];
 
   const formatNumber = (n: number) =>
