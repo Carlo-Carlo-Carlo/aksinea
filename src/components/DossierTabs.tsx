@@ -20,7 +20,6 @@ interface DossierTabsProps {
   mouvements: any[];
   cessions: any[];
   titres?: any[];
-  recapExercices?: any[];
   userPlan?: string;
 }
 
@@ -30,7 +29,6 @@ export function DossierTabs({
   mouvements,
   cessions,
   titres = [],
-  recapExercices = [],
   userPlan = "free",
 }: DossierTabsProps) {
   const [activeTab, setActiveTab] = useState("portefeuille");
@@ -156,7 +154,7 @@ export function DossierTabs({
         <SyntheseFiscaleTab portefeuille={portefeuille} cessions={cessions} titres={titres} formatCurrency={formatCurrency} formatNumber={formatNumber} userPlan={userPlan} />
       )}
       {activeTab === "historique" && (
-        <HistoriqueTab recapExercices={recapExercices} formatCurrency={formatCurrency} userPlan={userPlan} />
+        <HistoriqueTab dossierId={dossierId} formatCurrency={formatCurrency} userPlan={userPlan} />
       )}
     </div>
   );
