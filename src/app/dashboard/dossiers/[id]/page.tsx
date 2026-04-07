@@ -90,6 +90,7 @@ export default async function DossierPage({ params }: PageProps) {
         portefeuille={portefeuille || []}
         mouvements={mouvements || []}
         cessions={cessions || []}
+        titres={titresWithLots || []}
         userPlan={profile?.plan || "free"}
       />
     </div>
