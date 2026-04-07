@@ -478,7 +478,37 @@ function SyntheseFiscaleTab({ portefeuille, cessions, titres, formatCurrency, fo
       )}
     </div>
   );
-  function HistoriqueTab({ recapExercices, formatCurrency, userPlan }: { recapExercices: any[]; formatCurrency: (n: number) => string; userPlan: string }) {
+  function HistoriqueTab({ dossierId, formatCurrency, userPlan }: { dossierId: string; formatCurrency: (n: number) => string; userPlan: string }) {
+  const [recapExercices, setRecapExercices] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    async function load() {
+      if (userPlan === "free") {
+        setLoading(false);
+        return;
+      }
+      try {
+        const supabase = createClient();
+        const { data, error: fetchError } = await supabase
+          .from("v_recap_cessions")
+          .select("*")
+          .eq("dossier_id", dossierId);
+
+        if (fetchError) {
+          setError("Impossible de charger l'historique");
+        } else {
+          setRecapExercices(data || []);
+        }
+      } catch {
+        setError("Erreur de chargement");
+      }
+      setLoading(false);
+    }
+    load();
+  }, [dossierId, userPlan]);
+
   if (userPlan === "free") {
     return (
       <div className="bg-white rounded-xl border border-gray-200 p-12 text-center">
@@ -486,6 +516,22 @@ function SyntheseFiscaleTab({ portefeuille, cessions, titres, formatCurrency, fo
         <p className="text-gray-900 font-medium mb-2">Historique multi-exercices</p>
         <p className="text-gray-500 mb-4">Cette fonctionnalité est réservée au plan Pro.</p>
         <span className="text-xs bg-amber-100 text-amber-700 px-3 py-1 rounded-full font-medium">Pro</span>
+      </div>
+    );
+  }
+
+  if (loading) {
+    return (
+      <div className="bg-white rounded-xl border border-gray-200 p-12 text-center">
+        <p className="text-gray-500">Chargement...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="bg-white rounded-xl border border-gray-200 p-12 text-center">
+        <p className="text-red-500">{error}</p>
       </div>
     );
   }
@@ -499,7 +545,7 @@ function SyntheseFiscaleTab({ portefeuille, cessions, titres, formatCurrency, fo
     );
   }
 
-  const exercices = [...new Set(recapExercices.map((r: any) => r.exercice))].sort((a, b) => b - a);
+  const exercices = [...new Set(recapExercices.map((r: any) => r.exercice))].sort((a: number, b: number) => b - a);
 
   return (
     <div className="space-y-6">
@@ -508,7 +554,6 @@ function SyntheseFiscaleTab({ portefeuille, cessions, titres, formatCurrency, fo
         const totalPV = rows.reduce((sum: number, r: any) => sum + parseFloat(r.total_plus_values || 0), 0);
         const totalMV = rows.reduce((sum: number, r: any) => sum + parseFloat(r.total_moins_values || 0), 0);
         const totalNet = totalPV + totalMV;
-        const totalQte = rows.reduce((sum: number, r: any) => sum + parseFloat(r.quantite_totale_cedee || 0), 0);
 
         return (
           <div key={exercice} className="bg-white rounded-xl border border-gray-200 overflow-hidden">
