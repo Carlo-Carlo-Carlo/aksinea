@@ -56,6 +56,13 @@ export default async function DossierPage({ params }: PageProps) {
     .from("titres")
     .select("id, name, isin, type, compte_comptable, regime_fiscal")
     .eq("dossier_id", dossier.id);
+// Récupérer le récap par exercice
+  const { data: recapExercices } = await supabase
+    .from("v_recap_cessions")
+    .select("*")
+    .eq("dossier_id", dossier.id)
+    .order("exercice", { ascending: false });
+  
   return (
     <div>
       {/* Header */}
@@ -91,6 +98,7 @@ export default async function DossierPage({ params }: PageProps) {
         mouvements={mouvements || []}
         cessions={cessions || []}
         titres={titresWithLots || []}
+        recapExercices={recapExercices || []}
         userPlan={profile?.plan || "free"}
       />
     </div>
