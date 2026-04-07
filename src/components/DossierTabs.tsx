@@ -154,6 +154,9 @@ export function DossierTabs({
       {activeTab === "synthese" && (
         <SyntheseFiscaleTab portefeuille={portefeuille} cessions={cessions} titres={titres} formatCurrency={formatCurrency} formatNumber={formatNumber} userPlan={userPlan} />
       )}
+      {activeTab === "historique" && (
+        <HistoriqueTab recapExercices={recapExercices} formatCurrency={formatCurrency} userPlan={userPlan} />
+      )}
     </div>
   );
 }
