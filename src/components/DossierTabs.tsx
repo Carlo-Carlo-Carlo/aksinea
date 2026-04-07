@@ -479,4 +479,87 @@ function SyntheseFiscaleTab({ portefeuille, cessions, titres, formatCurrency, fo
       )}
     </div>
   );
+  function HistoriqueTab({ recapExercices, formatCurrency, userPlan }: { recapExercices: any[]; formatCurrency: (n: number) => string; userPlan: string }) {
+  if (userPlan === "free") {
+    return (
+      <div className="bg-white rounded-xl border border-gray-200 p-12 text-center">
+        <History className="w-10 h-10 text-gray-300 mx-auto mb-3" />
+        <p className="text-gray-900 font-medium mb-2">Historique multi-exercices</p>
+        <p className="text-gray-500 mb-4">Cette fonctionnalité est réservée au plan Pro.</p>
+        <span className="text-xs bg-amber-100 text-amber-700 px-3 py-1 rounded-full font-medium">Pro</span>
+      </div>
+    );
+  }
+
+  if (recapExercices.length === 0) {
+    return (
+      <div className="bg-white rounded-xl border border-gray-200 p-12 text-center">
+        <History className="w-10 h-10 text-gray-300 mx-auto mb-3" />
+        <p className="text-gray-500">Aucune cession enregistrée. L&apos;historique apparaîtra après vos premières ventes.</p>
+      </div>
+    );
+  }
+
+  const exercices = [...new Set(recapExercices.map((r: any) => r.exercice))].sort((a, b) => b - a);
+
+  return (
+    <div className="space-y-6">
+      {exercices.map((exercice) => {
+        const rows = recapExercices.filter((r: any) => r.exercice === exercice);
+        const totalPV = rows.reduce((sum: number, r: any) => sum + parseFloat(r.total_plus_values || 0), 0);
+        const totalMV = rows.reduce((sum: number, r: any) => sum + parseFloat(r.total_moins_values || 0), 0);
+        const totalNet = totalPV + totalMV;
+        const totalQte = rows.reduce((sum: number, r: any) => sum + parseFloat(r.quantite_totale_cedee || 0), 0);
+
+        return (
+          <div key={exercice} className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+            <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
+              <h3 className="text-lg font-semibold text-gray-900">Exercice {exercice}</h3>
+              <div className="flex items-center gap-4 text-sm">
+                <span className="text-green-600 font-medium">PV: {formatCurrency(totalPV)}</span>
+                <span className="text-red-600 font-medium">MV: {formatCurrency(totalMV)}</span>
+                <span className={`font-bold ${totalNet >= 0 ? "text-green-700" : "text-red-700"}`}>
+                  Net: {totalNet > 0 ? "+" : ""}{formatCurrency(totalNet)}
+                </span>
+              </div>
+            </div>
+            <table className="w-full">
+              <thead>
+                <tr className="bg-gray-50 border-b border-gray-200">
+                  <th className="text-left px-6 py-3 text-xs font-semibold text-gray-500 uppercase">Titre</th>
+                  <th className="text-right px-6 py-3 text-xs font-semibold text-gray-500 uppercase">Qté cédée</th>
+                  <th className="text-right px-6 py-3 text-xs font-semibold text-gray-500 uppercase">Plus-values</th>
+                  <th className="text-right px-6 py-3 text-xs font-semibold text-gray-500 uppercase">Moins-values</th>
+                  <th className="text-right px-6 py-3 text-xs font-semibold text-gray-500 uppercase">Résultat net</th>
+                  <th className="text-right px-6 py-3 text-xs font-semibold text-gray-500 uppercase">Nb cessions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100">
+                {rows.map((row: any, i: number) => {
+                  const net = parseFloat(row.resultat_net || 0);
+                  return (
+                    <tr key={i} className="hover:bg-gray-50">
+                      <td className="px-6 py-4 text-sm font-medium text-gray-900">{row.titre_name}</td>
+                      <td className="px-6 py-4 text-right font-mono text-sm">{parseFloat(row.quantite_totale_cedee).toFixed(2)}</td>
+                      <td className="px-6 py-4 text-right font-mono text-sm text-green-600">
+                        {parseFloat(row.total_plus_values) > 0 ? "+" + formatCurrency(parseFloat(row.total_plus_values)) : "—"}
+                      </td>
+                      <td className="px-6 py-4 text-right font-mono text-sm text-red-600">
+                        {parseFloat(row.total_moins_values) < 0 ? formatCurrency(parseFloat(row.total_moins_values)) : "—"}
+                      </td>
+                      <td className={`px-6 py-4 text-right font-mono text-sm font-medium ${net >= 0 ? "text-green-600" : "text-red-600"}`}>
+                        {net !== 0 ? (net > 0 ? "+" : "") + formatCurrency(net) : "—"}
+                      </td>
+                      <td className="px-6 py-4 text-right text-sm text-gray-500">{row.nb_cessions}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
 }
