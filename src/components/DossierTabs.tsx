@@ -412,6 +412,13 @@ function SyntheseFiscaleTab({ portefeuille, cessions, titres, formatCurrency, fo
             {totalResultat !== 0 ? (totalResultat > 0 ? "+" : "") + formatCurrency(totalResultat) : "—"}
           </p>
         </div>
+        <div className="bg-white rounded-xl border border-gray-200 p-6">
+          <p className="text-sm text-gray-500 mb-1">Estimation IS (25%)</p>
+          <p className="text-2xl font-bold text-gray-900">
+            {totalResultat > 0 ? formatCurrency(totalResultat * 0.25) : "—"}
+          </p>
+          <p className="text-xs text-gray-400 mt-1">Taux normal IS, à titre indicatif</p>
+        </div>
       </div>
 
       {/* Détail par régime */}
