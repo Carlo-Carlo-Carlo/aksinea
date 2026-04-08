@@ -478,6 +478,7 @@ function SyntheseFiscaleTab({ portefeuille, cessions, titres, formatCurrency, fo
       )}
     </div>
   );
+  }
   function HistoriqueTab({ dossierId, formatCurrency, userPlan }: { dossierId: string; formatCurrency: (n: number) => string; userPlan: string }) {
   const [recapExercices, setRecapExercices] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
