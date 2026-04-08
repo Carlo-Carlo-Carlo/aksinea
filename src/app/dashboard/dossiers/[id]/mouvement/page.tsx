@@ -302,6 +302,41 @@ export default function MouvementPage() {
                   <Plus className="w-4 h-4" />
                   Nouveau
                 </button>
+                </div>
+                {referentiel.length > 0 && titres.length === 0 && (
+                  <div className="border border-primary-100 rounded-lg p-3 bg-primary-50/30">
+                    <p className="text-xs font-medium text-gray-600 mb-2">Depuis votre référentiel cabinet :</p>
+                    <div className="flex flex-wrap gap-2">
+                      {referentiel.filter(r => !titres.find(t => t.name === r.name && t.isin === r.isin)).map((ref) => (
+                        <button
+                          key={ref.id}
+                          type="button"
+                          onClick={async () => {
+                            const { data: newTitre } = await supabase
+                              .from("titres")
+                              .insert({
+                                dossier_id: dossierId,
+                                name: ref.name,
+                                isin: ref.isin,
+                                type: ref.type,
+                                compte_comptable: ref.compte_comptable,
+                                regime_fiscal: ref.regime_fiscal,
+                              })
+                              .select()
+                              .single();
+                            if (newTitre) {
+                              setTitres([...titres, newTitre]);
+                              setTitreId(newTitre.id);
+                            }
+                          }}
+                          className="text-xs px-3 py-1.5 bg-white border border-primary-200 rounded-full text-primary-700 hover:bg-primary-100 transition-colors"
+                        >
+                          {ref.name}{ref.isin ? ` (${ref.isin})` : ""}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             ) : (
               <div className="border border-primary-200 rounded-lg p-4 bg-primary-50/30 space-y-3">
