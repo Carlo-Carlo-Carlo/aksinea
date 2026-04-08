@@ -453,6 +453,12 @@ function SyntheseFiscaleTab({ portefeuille, cessions, titres, formatCurrency, fo
                   {s.resultatNet !== 0 ? (s.resultatNet > 0 ? "+" : "") + formatCurrency(s.resultatNet) : "—"}
                 </p>
               </div>
+              <div>
+                <p className="text-xs text-gray-500 mb-1">Estimation IS (25%)</p>
+                <p className="text-lg font-semibold text-gray-900">
+                  {s.resultatNet > 0 ? formatCurrency(s.resultatNet * 0.25) : "—"}
+                </p>
+              </div>
             </div>
 
             {s.regime === "opcvm_taxable" && (
