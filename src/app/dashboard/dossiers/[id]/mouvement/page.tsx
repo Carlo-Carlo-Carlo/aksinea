@@ -115,6 +115,27 @@ export default function MouvementPage() {
     setShowNewTitre(false);
     setNewTitreName("");
     setNewTitreIsin("");
+
+    // Ajouter au référentiel du cabinet si pas déjà présent
+    const { data: { user: currentUser } } = await supabase.auth.getUser();
+    if (currentUser) {
+      const exists = referentiel.find(r => r.name === data.name && r.isin === data.isin);
+      if (!exists) {
+        const { data: refEntry } = await supabase
+          .from("titres_referentiel")
+          .insert({
+            user_id: currentUser.id,
+            name: data.name,
+            isin: data.isin,
+            type: data.type,
+            compte_comptable: data.compte_comptable,
+            regime_fiscal: newTitreRegime,
+          })
+          .select()
+          .single();
+        if (refEntry) setReferentiel([...referentiel, refEntry]);
+      }
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
