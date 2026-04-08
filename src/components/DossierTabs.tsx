@@ -401,7 +401,7 @@ function SyntheseFiscaleTab({ portefeuille, cessions, titres, formatCurrency, fo
   return (
     <div className="space-y-6">
       {/* Résumé global */}
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
         <div className="bg-white rounded-xl border border-gray-200 p-6">
           <p className="text-sm text-gray-500 mb-1">Valeur d&apos;acquisition totale en portefeuille</p>
           <p className="text-2xl font-bold text-gray-900">{formatCurrency(totalValeur)}</p>
