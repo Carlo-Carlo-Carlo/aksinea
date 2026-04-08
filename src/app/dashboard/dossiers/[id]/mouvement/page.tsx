@@ -61,6 +61,17 @@ export default function MouvementPage() {
         .order("name");
 
       if (data) setTitres(data);
+
+      // Charger le référentiel du cabinet
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { data: refData } = await supabase
+          .from("titres_referentiel")
+          .select("*")
+          .eq("user_id", user.id)
+          .order("name");
+        if (refData) setReferentiel(refData);
+      }
     }
     load();
   }, [dossierId]);
