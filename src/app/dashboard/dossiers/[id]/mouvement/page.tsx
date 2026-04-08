@@ -303,7 +303,7 @@ export default function MouvementPage() {
                   Nouveau
                 </button>
                 </div>
-                {referentiel.length > 0 && titres.length === 0 && (
+                {referentiel.filter(r => !titres.find(t => t.name === r.name)).length > 0 && (
                   <div className="border border-primary-100 rounded-lg p-3 bg-primary-50/30">
                     <p className="text-xs font-medium text-gray-600 mb-2">Depuis votre référentiel cabinet :</p>
                     <div className="flex flex-wrap gap-2">
