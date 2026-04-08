@@ -35,6 +35,7 @@ export default function MouvementPage() {
   const [newTitreType, setNewTitreType] = useState("action");
   const [newTitreCompte, setNewTitreCompte] = useState("503");
   const [newTitreRegime, setNewTitreRegime] = useState("standard");
+  const [referentiel, setReferentiel] = useState<Titre[]>([]);
 
   // State
   const [titres, setTitres] = useState<Titre[]>([]);
