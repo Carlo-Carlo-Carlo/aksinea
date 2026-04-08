@@ -279,20 +279,21 @@ export default function MouvementPage() {
               Titre *
             </label>
             {!showNewTitre ? (
-              <div className="flex gap-2">
-                <select
-                  value={titreId}
-                  onChange={(e) => setTitreId(e.target.value)}
-                  className="flex-1 px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-colors bg-white"
-                >
-                  <option value="">Sélectionner un titre...</option>
-                  {titres.map((t) => (
-                    <option key={t.id} value={t.id}>
-                      {t.name}
-                      {t.isin ? ` (${t.isin})` : ""}
-                    </option>
-                  ))}
-                </select>
+              <div className="space-y-2">
+                <div className="flex gap-2">
+                  <select
+                    value={titreId}
+                    onChange={(e) => setTitreId(e.target.value)}
+                    className="flex-1 px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-colors bg-white"
+                  >
+                    <option value="">Sélectionner un titre...</option>
+                    {titres.map((t) => (
+                      <option key={t.id} value={t.id}>
+                        {t.name}
+                        {t.isin ? ` (${t.isin})` : ""}
+                      </option>
+                    ))}
+                  </select>
                 <button
                   type="button"
                   onClick={() => setShowNewTitre(true)}
