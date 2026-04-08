@@ -607,4 +607,3 @@ function SyntheseFiscaleTab({ portefeuille, cessions, titres, formatCurrency, fo
     </div>
   );
 }
-}
