@@ -348,7 +348,7 @@ export default function Home() {
                 </li>
                 <li className="flex items-center gap-2 text-sm text-gray-600">
                   <Check className="w-4 h-4 text-green-500 flex-shrink-0" />
-                  Exercice en cours uniquement
+                  Clôture d&apos;exercice
                 </li>
               </ul>
               <Link
