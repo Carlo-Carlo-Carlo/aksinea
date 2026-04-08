@@ -434,7 +434,7 @@ function SyntheseFiscaleTab({ portefeuille, cessions, titres, formatCurrency, fo
               </div>
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
               <div>
                 <p className="text-xs text-gray-500 mb-1">Valeur d&apos;acquisition</p>
                 <p className="text-lg font-semibold text-gray-900">{formatCurrency(s.valeurAcquisition)}</p>
