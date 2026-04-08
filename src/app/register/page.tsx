@@ -59,7 +59,7 @@ export default function RegisterPage() {
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-white">Aksinea</h1>
           <p className="text-primary-200 mt-2">
-            Créez votre compte — Essai gratuit 14 jours
+            Créez votre compte — Gratuit pour 1 dossier
           </p>
         </div>
 
