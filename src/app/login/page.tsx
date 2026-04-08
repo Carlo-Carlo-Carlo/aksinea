@@ -99,7 +99,7 @@ export default function LoginPage() {
               href="/register"
               className="text-primary-600 font-medium hover:underline"
             >
-              Essai gratuit 14 jours
+              Créer un compte gratuitement
             </Link>
           </p>
         </form>
