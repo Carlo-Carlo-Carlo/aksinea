@@ -93,6 +93,7 @@ export default async function DossierPage({ params }: PageProps) {
         cessions={cessions || []}
         titres={titresWithLots || []}
         userPlan={profile?.plan || "free"}
+        regimeIs={dossier.regime_is || "pme"}
       />
     </div>
   );
