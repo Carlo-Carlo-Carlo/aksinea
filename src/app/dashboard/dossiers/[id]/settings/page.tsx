@@ -56,6 +56,7 @@ export default function DossierSettingsPage() {
         name: name.trim(),
         siren: siren.trim() || null,
         notes: notes.trim() || null,
+        regime_is: regimeIs,
         updated_at: new Date().toISOString(),
       })
       .eq("id", dossierId);
