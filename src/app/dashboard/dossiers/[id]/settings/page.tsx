@@ -38,6 +38,7 @@ export default function DossierSettingsPage() {
         setSiren(data.siren || "");
         setNotes(data.notes || "");
         setExerciceCloture(data.exercice_cloture || null);
+        setRegimeIs(data.regime_is || "pme");
       }
     }
     load();
