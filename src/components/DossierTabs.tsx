@@ -153,7 +153,7 @@ export function DossierTabs({
         <CessionsTab cessions={cessions} formatCurrency={formatCurrency} formatNumber={formatNumber} />
       )}
       {activeTab === "synthese" && (
-        <SyntheseFiscaleTab portefeuille={portefeuille} cessions={cessions} titres={titres} formatCurrency={formatCurrency} formatNumber={formatNumber} userPlan={userPlan} />
+        <SyntheseFiscaleTab portefeuille={portefeuille} cessions={cessions} titres={titres} formatCurrency={formatCurrency} formatNumber={formatNumber} userPlan={userPlan} regimeIs={regimeIs} />
       )}
       {activeTab === "historique" && (
         <HistoriqueTab dossierId={dossierId} formatCurrency={formatCurrency} userPlan={userPlan} />
