@@ -20,6 +20,7 @@ export default function DossierSettingsPage() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [confirmDelete, setConfirmDelete] = useState("");
+  const [regimeIs, setRegimeIs] = useState("pme");
   const [exerciceCloture, setExerciceCloture] = useState<string | null>(null);
   const [closingYear, setClosingYear] = useState(new Date().getFullYear().toString());
   const [closing, setClosing] = useState(false);
