@@ -157,6 +157,26 @@ export default function DossierSettingsPage() {
 
           <div>
             <label
+              htmlFor="regimeIs"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
+              Régime IS du client
+            </label>
+            <select
+              id="regimeIs"
+              value={regimeIs}
+              onChange={(e) => setRegimeIs(e.target.value)}
+              className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-colors bg-white"
+            >
+              <option value="pme">PME (15% jusqu&apos;à 42 500€, puis 25%)</option>
+              <option value="normal">Taux normal (25%)</option>
+            </select>
+            <p className="text-xs text-gray-400 mt-1">
+              PME : CA ≤ 10M€, capital détenu à 75%+ par des personnes physiques
+            </p>
+          </div>
+          <div>
+            <label
               htmlFor="notes"
               className="block text-sm font-medium text-gray-700 mb-1"
             >
