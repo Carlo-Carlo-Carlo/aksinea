@@ -336,6 +336,19 @@ function CessionsTab({ cessions, formatCurrency, formatNumber }: { cessions: any
 }
 
 function SyntheseFiscaleTab({ portefeuille, cessions, titres, formatCurrency, formatNumber, userPlan, regimeIs = "pme" }: { portefeuille: any[]; cessions: any[]; titres: any[]; formatCurrency: (n: number) => string; formatNumber: (n: number) => string; userPlan: string; regimeIs?: string }) {
+  const calculateIS = (resultat: number): number => {
+    if (resultat <= 0) return 0;
+    if (regimeIs === "pme") {
+      if (resultat <= 42500) {
+        return resultat * 0.15;
+      } else {
+        return 42500 * 0.15 + (resultat - 42500) * 0.25;
+      }
+    }
+    return resultat * 0.25;
+  };
+
+  const isLabel = regimeIs === "pme" ? "IS PME (15% / 25%)" : "IS (25%)";
   if (userPlan === "free") {
     return (
       <div className="bg-white rounded-xl border border-gray-200 p-12 text-center">
