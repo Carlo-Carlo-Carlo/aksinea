@@ -335,7 +335,7 @@ function CessionsTab({ cessions, formatCurrency, formatNumber }: { cessions: any
   );
 }
 
-function SyntheseFiscaleTab({ portefeuille, cessions, titres, formatCurrency, formatNumber, userPlan }: { portefeuille: any[]; cessions: any[]; titres: any[]; formatCurrency: (n: number) => string; formatNumber: (n: number) => string; userPlan: string }) {
+function SyntheseFiscaleTab({ portefeuille, cessions, titres, formatCurrency, formatNumber, userPlan, regimeIs = "pme" }: { portefeuille: any[]; cessions: any[]; titres: any[]; formatCurrency: (n: number) => string; formatNumber: (n: number) => string; userPlan: string; regimeIs?: string }) {
   if (userPlan === "free") {
     return (
       <div className="bg-white rounded-xl border border-gray-200 p-12 text-center">
