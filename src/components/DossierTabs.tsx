@@ -21,6 +21,7 @@ interface DossierTabsProps {
   cessions: any[];
   titres?: any[];
   userPlan?: string;
+  regimeIs?: string;
 }
 
 export function DossierTabs({
