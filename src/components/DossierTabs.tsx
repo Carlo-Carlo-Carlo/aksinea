@@ -31,6 +31,7 @@ export function DossierTabs({
   cessions,
   titres = [],
   userPlan = "free",
+  regimeIs = "pme",
 }: DossierTabsProps) {
   const [activeTab, setActiveTab] = useState("portefeuille");
   const [deleting, setDeleting] = useState<string | null>(null);
