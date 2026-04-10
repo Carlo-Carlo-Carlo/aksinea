@@ -111,6 +111,7 @@ export async function PUT(
             quantite_restante: mvt.quantite,
             prix_unitaire: mvt.prix_unitaire,
             frais_unitaire: fraisUnitaire,
+            cout_unitaire_total: parseFloat(mvt.prix_unitaire) + fraisUnitaire,
           });
         } else if (mvt.type === "vente") {
           const { data: lots } = await supabase
