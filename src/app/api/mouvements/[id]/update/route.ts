@@ -130,8 +130,6 @@ export async function PUT(
             const qteImputee = Math.min(qteRestante, lotRestant);
             const coutUnitaireLot = parseFloat(lot.prix_unitaire) + parseFloat(lot.frais_unitaire);
 
-            const plusMoinsValue = qteImputee * (parseFloat(mvt.prix_unitaire) - fraisVenteUnitaire - coutUnitaireLot);
-
             await supabase.from("cessions").insert({
               dossier_id: mvt.dossier_id,
               mouvement_vente_id: mvt.id,
@@ -142,7 +140,6 @@ export async function PUT(
               prix_achat_unitaire: coutUnitaireLot,
               prix_vente_unitaire: parseFloat(mvt.prix_unitaire),
               frais_vente_unitaire: fraisVenteUnitaire,
-              plus_moins_value: plusMoinsValue,
             });
 
             await supabase
