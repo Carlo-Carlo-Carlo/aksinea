@@ -71,7 +71,6 @@ export async function PUT(
     const newQte = quantite !== undefined ? quantite : mouvement.quantite;
     const newPrix = prix_unitaire !== undefined ? prix_unitaire : mouvement.prix_unitaire;
     const newFrais = frais !== undefined ? frais : mouvement.frais;
-    const newTotal = (newQte * newPrix) + newFrais;
 
     const { error: updateError } = await supabase
       .from("mouvements")
@@ -80,7 +79,6 @@ export async function PUT(
         quantite: newQte,
         prix_unitaire: newPrix,
         frais: newFrais,
-        montant_total: newTotal,
       })
       .eq("id", mouvementId);
 
