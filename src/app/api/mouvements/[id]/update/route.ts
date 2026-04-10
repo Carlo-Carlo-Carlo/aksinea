@@ -68,13 +68,19 @@ export async function PUT(
       .eq("titre_id", titre_id);
 
     // 3. Mettre à jour le mouvement
+    const newQte = quantite !== undefined ? quantite : mouvement.quantite;
+    const newPrix = prix_unitaire !== undefined ? prix_unitaire : mouvement.prix_unitaire;
+    const newFrais = frais !== undefined ? frais : mouvement.frais;
+    const newTotal = (newQte * newPrix) + newFrais;
+
     const { error: updateError } = await supabase
       .from("mouvements")
       .update({
         date: date || mouvement.date,
-        quantite: quantite !== undefined ? quantite : mouvement.quantite,
-        prix_unitaire: prix_unitaire !== undefined ? prix_unitaire : mouvement.prix_unitaire,
-        frais: frais !== undefined ? frais : mouvement.frais,
+        quantite: newQte,
+        prix_unitaire: newPrix,
+        frais: newFrais,
+        montant_total: newTotal,
       })
       .eq("id", mouvementId);
 
