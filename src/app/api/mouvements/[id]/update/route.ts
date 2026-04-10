@@ -100,7 +100,7 @@ export async function PUT(
       for (const mvt of mouvementsRestants) {
         if (mvt.type === "achat") {
           const fraisUnitaire = mvt.quantite > 0 ? mvt.frais / mvt.quantite : 0;
-          await supabase.from("lots_fifo").insert({
+         await supabase.from("lots_fifo").insert({
             dossier_id: mvt.dossier_id,
             titre_id: mvt.titre_id,
             mouvement_achat_id: mvt.id,
@@ -109,7 +109,6 @@ export async function PUT(
             quantite_restante: mvt.quantite,
             prix_unitaire: mvt.prix_unitaire,
             frais_unitaire: fraisUnitaire,
-            cout_unitaire_total: parseFloat(mvt.prix_unitaire) + fraisUnitaire,
           });
         } else if (mvt.type === "vente") {
           const { data: lots } = await supabase
