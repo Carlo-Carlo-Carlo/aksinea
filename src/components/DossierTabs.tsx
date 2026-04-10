@@ -220,6 +220,50 @@ function PortefeuilleTab({ portefeuille, formatCurrency, formatNumber }: { porte
 }
 
 function MouvementsTab({ mouvements, formatCurrency, formatNumber, deleting, onDelete }: { mouvements: any[]; formatCurrency: (n: number) => string; formatNumber: (n: number) => string; deleting: string | null; onDelete: (id: string) => void }) {
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editDate, setEditDate] = useState("");
+  const [editQuantite, setEditQuantite] = useState("");
+  const [editPrix, setEditPrix] = useState("");
+  const [editFrais, setEditFrais] = useState("");
+  const [saving, setSaving] = useState(false);
+
+  const startEdit = (mvt: any) => {
+    setEditingId(mvt.id);
+    setEditDate(mvt.date);
+    setEditQuantite(String(mvt.quantite));
+    setEditPrix(String(mvt.prix_unitaire));
+    setEditFrais(String(mvt.frais));
+  };
+
+  const cancelEdit = () => {
+    setEditingId(null);
+  };
+
+  const saveEdit = async (id: string) => {
+    setSaving(true);
+    try {
+      const res = await fetch("/api/mouvements/" + id + "/update", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          date: editDate,
+          quantite: parseFloat(editQuantite),
+          prix_unitaire: parseFloat(editPrix),
+          frais: parseFloat(editFrais) || 0,
+        }),
+      });
+      if (res.ok) {
+        window.location.reload();
+      } else {
+        const data = await res.json();
+        alert(data.error || "Erreur lors de la modification");
+      }
+    } catch {
+      alert("Erreur réseau");
+    }
+    setSaving(false);
+  };
+
   if (mouvements.length === 0) {
     return (
       <div className="bg-white rounded-xl border border-gray-200 p-12 text-center">
@@ -241,38 +285,92 @@ function MouvementsTab({ mouvements, formatCurrency, formatNumber, deleting, onD
             <th className="text-right px-6 py-3 text-xs font-semibold text-gray-500 uppercase">Prix unitaire</th>
             <th className="text-right px-6 py-3 text-xs font-semibold text-gray-500 uppercase">Frais</th>
             <th className="text-right px-6 py-3 text-xs font-semibold text-gray-500 uppercase">Total</th>
-            <th className="px-4 py-3"></th>
+            <th className="px-4 py-3 w-20"></th>
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-100">
-          {mouvements.map((mvt: any) => (
-            <tr key={mvt.id} className="hover:bg-gray-50">
-              <td className="px-6 py-4 text-sm">{new Date(mvt.date).toLocaleDateString("fr-FR")}</td>
-              <td className="px-6 py-4">
-                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                  mvt.type === "achat" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
-                }`}>
-                  {mvt.type === "achat" ? "Achat" : "Vente"}
-                </span>
-              </td>
-              <td className="px-6 py-4"><p className="text-sm font-medium text-gray-900">{mvt.titres?.name}</p></td>
-              <td className="px-6 py-4 text-right font-mono text-sm">{formatNumber(mvt.quantite)}</td>
-              <td className="px-6 py-4 text-right font-mono text-sm">{formatCurrency(mvt.prix_unitaire)}</td>
-              <td className="px-6 py-4 text-right font-mono text-sm text-gray-500">{formatCurrency(mvt.frais)}</td>
-              <td className="px-6 py-4 text-right font-mono text-sm font-medium">{formatCurrency(mvt.montant_total)}</td>
-              <td className="px-4 py-4">
-                <button onClick={() => onDelete(mvt.id)} disabled={deleting === mvt.id} className="text-gray-400 hover:text-red-600 transition-colors disabled:opacity-50" title="Supprimer ce mouvement">
-                  {deleting === mvt.id ? "..." : "✕"}
-                </button>
-              </td>
-            </tr>
-          ))}
+          {mouvements.map((mvt: any) => {
+            const isEditing = editingId === mvt.id;
+
+            if (isEditing) {
+              return (
+                <tr key={mvt.id} className="bg-primary-50/30">
+                  <td className="px-6 py-3">
+                    <input type="date" value={editDate} onChange={(e) => setEditDate(e.target.value)}
+                      className="w-full px-2 py-1.5 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-primary-500 outline-none" />
+                  </td>
+                  <td className="px-6 py-3">
+                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                      mvt.type === "achat" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
+                    }`}>
+                      {mvt.type === "achat" ? "Achat" : "Vente"}
+                    </span>
+                  </td>
+                  <td className="px-6 py-3 text-sm font-medium text-gray-900">{mvt.titres?.name}</td>
+                  <td className="px-6 py-3">
+                    <input type="number" step="any" value={editQuantite} onChange={(e) => setEditQuantite(e.target.value)}
+                      className="w-full px-2 py-1.5 border border-gray-300 rounded text-sm text-right focus:ring-2 focus:ring-primary-500 outline-none" />
+                  </td>
+                  <td className="px-6 py-3">
+                    <input type="number" step="any" value={editPrix} onChange={(e) => setEditPrix(e.target.value)}
+                      className="w-full px-2 py-1.5 border border-gray-300 rounded text-sm text-right focus:ring-2 focus:ring-primary-500 outline-none" />
+                  </td>
+                  <td className="px-6 py-3">
+                    <input type="number" step="any" value={editFrais} onChange={(e) => setEditFrais(e.target.value)}
+                      className="w-full px-2 py-1.5 border border-gray-300 rounded text-sm text-right focus:ring-2 focus:ring-primary-500 outline-none" />
+                  </td>
+                  <td className="px-6 py-3 text-right font-mono text-sm text-gray-400">—</td>
+                  <td className="px-4 py-3">
+                    <div className="flex gap-1">
+                      <button onClick={() => saveEdit(mvt.id)} disabled={saving}
+                        className="text-green-600 hover:text-green-800 text-sm font-medium disabled:opacity-50">
+                        {saving ? "..." : "OK"}
+                      </button>
+                      <button onClick={cancelEdit}
+                        className="text-gray-400 hover:text-gray-600 text-sm">
+                        ✕
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              );
+            }
+
+            return (
+              <tr key={mvt.id} className="hover:bg-gray-50">
+                <td className="px-6 py-4 text-sm">{new Date(mvt.date).toLocaleDateString("fr-FR")}</td>
+                <td className="px-6 py-4">
+                  <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                    mvt.type === "achat" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
+                  }`}>
+                    {mvt.type === "achat" ? "Achat" : "Vente"}
+                  </span>
+                </td>
+                <td className="px-6 py-4"><p className="text-sm font-medium text-gray-900">{mvt.titres?.name}</p></td>
+                <td className="px-6 py-4 text-right font-mono text-sm">{formatNumber(mvt.quantite)}</td>
+                <td className="px-6 py-4 text-right font-mono text-sm">{formatCurrency(mvt.prix_unitaire)}</td>
+                <td className="px-6 py-4 text-right font-mono text-sm text-gray-500">{formatCurrency(mvt.frais)}</td>
+                <td className="px-6 py-4 text-right font-mono text-sm font-medium">{formatCurrency(mvt.montant_total)}</td>
+                <td className="px-4 py-4">
+                  <div className="flex gap-2">
+                    <button onClick={() => startEdit(mvt)} title="Modifier ce mouvement"
+                      className="text-gray-400 hover:text-primary-600 transition-colors">
+                      ✎
+                    </button>
+                    <button onClick={() => onDelete(mvt.id)} disabled={deleting === mvt.id}
+                      className="text-gray-400 hover:text-red-600 transition-colors disabled:opacity-50" title="Supprimer ce mouvement">
+                      {deleting === mvt.id ? "..." : "✕"}
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
     </div>
   );
 }
-
 function CessionsTab({ cessions, formatCurrency, formatNumber }: { cessions: any[]; formatCurrency: (n: number) => string; formatNumber: (n: number) => string }) {
   if (cessions.length === 0) {
     return (
