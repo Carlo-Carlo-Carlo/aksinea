@@ -153,7 +153,7 @@ export async function PUT(
       }
     }
 
-    return NextResponse.json({ success: true });
+   return NextResponse.json({ success: true, debug: { mouvementId, newDate, newQuantite, newPrix, newFrais, titreId, dossierId } });
   } catch (err: any) {
     return NextResponse.json(
       { error: err.message || "Erreur serveur" },
