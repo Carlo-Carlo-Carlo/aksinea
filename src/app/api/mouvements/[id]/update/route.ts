@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function PUT(
   request: NextRequest,
-  context: any
+  { params }: { params: { id: string } }
 ) {
   const supabase = createClient();
 
@@ -15,7 +15,7 @@ export async function PUT(
     return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
   }
 
-  const { id: mouvementId } = await context.params;
+  const mouvementId = params.id;
   const body = await request.json();
   const { date, quantite, prix_unitaire, frais } = body;
 
