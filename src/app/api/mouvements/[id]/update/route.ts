@@ -19,21 +19,21 @@ export async function PUT(
   const body = await request.json();
   const { date, quantite, prix_unitaire, frais } = body;
 
-  // Récupérer le mouvement avec vérification de propriété
-  const { data: mouvement } = await supabase
+  // Récupérer le mouvement existant
+  const { data: mouvement, error: fetchError } = await supabase
     .from("mouvements")
     .select("*, dossiers!inner(user_id, exercice_cloture)")
     .eq("id", mouvementId)
     .single();
 
-  if (!mouvement || mouvement.dossiers.user_id !== user.id) {
+  if (fetchError || !mouvement || mouvement.dossiers.user_id !== user.id) {
     return NextResponse.json(
       { error: "Mouvement introuvable" },
       { status: 404 }
     );
   }
 
-  // Vérifier la clôture d'exercice sur l'ancienne ET la nouvelle date
+  // Vérifier la clôture
   const cloture = mouvement.dossiers.exercice_cloture;
   if (cloture) {
     if (mouvement.date <= cloture) {
@@ -50,57 +50,59 @@ export async function PUT(
     }
   }
 
-  const { dossier_id, titre_id } = mouvement;
+  const dossierId = mouvement.dossier_id;
+  const titreId = mouvement.titre_id;
+  const type = mouvement.type;
+  const newDate = date || mouvement.date;
+  const newQuantite = quantite !== undefined ? quantite : mouvement.quantite;
+  const newPrix = prix_unitaire !== undefined ? prix_unitaire : mouvement.prix_unitaire;
+  const newFrais = frais !== undefined ? frais : mouvement.frais;
 
   try {
-    // 1. Supprimer toutes les cessions liées à ce titre dans ce dossier
-    await supabase
-      .from("cessions")
-      .delete()
-      .eq("dossier_id", dossier_id)
-      .eq("titre_id", titre_id);
+    // 1. Supprimer cessions de ce titre
+    await supabase.from("cessions").delete().eq("dossier_id", dossierId).eq("titre_id", titreId);
 
-    // 2. Supprimer tous les lots FIFO de ce titre dans ce dossier
-    await supabase
-      .from("lots_fifo")
-      .delete()
-      .eq("dossier_id", dossier_id)
-      .eq("titre_id", titre_id);
+    // 2. Supprimer lots FIFO de ce titre
+    await supabase.from("lots_fifo").delete().eq("dossier_id", dossierId).eq("titre_id", titreId);
 
-    // 3. Mettre à jour le mouvement
-    const newQte = quantite !== undefined ? quantite : mouvement.quantite;
-    const newPrix = prix_unitaire !== undefined ? prix_unitaire : mouvement.prix_unitaire;
-    const newFrais = frais !== undefined ? frais : mouvement.frais;
+    // 3. Supprimer le mouvement
+    await supabase.from("mouvements").delete().eq("id", mouvementId);
 
-    const { error: updateError } = await supabase
+    // 4. Recréer le mouvement avec les nouvelles valeurs
+    const { error: insertError } = await supabase
       .from("mouvements")
-      .update({
-        date: date || mouvement.date,
-        quantite: newQte,
+      .insert({
+        dossier_id: dossierId,
+        titre_id: titreId,
+        type: type,
+        date: newDate,
+        quantite: newQuantite,
         prix_unitaire: newPrix,
         frais: newFrais,
-      })
-      .eq("id", mouvementId);
+      });
 
-    if (updateError) {
-      throw new Error("Erreur mise à jour: " + updateError.message);
+    if (insertError) {
+      return NextResponse.json({ error: "Erreur création: " + insertError.message }, { status: 500 });
     }
 
-    // 4. Récupérer tous les mouvements de ce titre, triés par date
-    const { data: mouvementsRestants } = await supabase
+    // 5. Récupérer TOUS les mouvements de ce titre triés par date
+    const { data: allMvts } = await supabase
       .from("mouvements")
       .select("*")
-      .eq("dossier_id", dossier_id)
-      .eq("titre_id", titre_id)
+      .eq("dossier_id", dossierId)
+      .eq("titre_id", titreId)
       .order("date", { ascending: true })
-      .order("created_at", { ascending: true });
+      .order("type", { ascending: true });
 
-    // 5. Rejouer tous les mouvements pour recalculer le FIFO
-    if (mouvementsRestants && mouvementsRestants.length > 0) {
-      for (const mvt of mouvementsRestants) {
+    // 6. Rejouer tous les mouvements pour reconstruire le FIFO
+    if (allMvts) {
+      for (const mvt of allMvts) {
         if (mvt.type === "achat") {
-          const fraisUnitaire = mvt.quantite > 0 ? mvt.frais / mvt.quantite : 0;
-         await supabase.from("lots_fifo").insert({
+          const fraisUnit = parseFloat(mvt.quantite) > 0
+            ? parseFloat(mvt.frais) / parseFloat(mvt.quantite)
+            : 0;
+
+          const { error: lotErr } = await supabase.from("lots_fifo").insert({
             dossier_id: mvt.dossier_id,
             titre_id: mvt.titre_id,
             mouvement_achat_id: mvt.id,
@@ -108,8 +110,12 @@ export async function PUT(
             quantite_initiale: mvt.quantite,
             quantite_restante: mvt.quantite,
             prix_unitaire: mvt.prix_unitaire,
-            frais_unitaire: fraisUnitaire,
+            frais_unitaire: fraisUnit,
           });
+
+          if (lotErr) {
+            return NextResponse.json({ error: "Erreur lot FIFO: " + lotErr.message }, { status: 500 });
+          }
         } else if (mvt.type === "vente") {
           const { data: lots } = await supabase
             .from("lots_fifo")
@@ -122,25 +128,31 @@ export async function PUT(
           if (!lots) continue;
 
           let qteRestante = parseFloat(mvt.quantite);
-          const fraisVenteUnitaire = mvt.quantite > 0 ? mvt.frais / mvt.quantite : 0;
+          const fraisVU = parseFloat(mvt.quantite) > 0
+            ? parseFloat(mvt.frais) / parseFloat(mvt.quantite)
+            : 0;
 
           for (const lot of lots) {
             if (qteRestante <= 0) break;
             const lotRestant = parseFloat(lot.quantite_restante);
             const qteImputee = Math.min(qteRestante, lotRestant);
-            const coutUnitaireLot = parseFloat(lot.prix_unitaire) + parseFloat(lot.frais_unitaire);
+            const coutUnitLot = parseFloat(lot.prix_unitaire) + parseFloat(lot.frais_unitaire);
 
-            await supabase.from("cessions").insert({
+            const { error: cessErr } = await supabase.from("cessions").insert({
               dossier_id: mvt.dossier_id,
               mouvement_vente_id: mvt.id,
               lot_fifo_id: lot.id,
               titre_id: mvt.titre_id,
               date_cession: mvt.date,
               quantite: qteImputee,
-              prix_achat_unitaire: coutUnitaireLot,
+              prix_achat_unitaire: coutUnitLot,
               prix_vente_unitaire: parseFloat(mvt.prix_unitaire),
-              frais_vente_unitaire: fraisVenteUnitaire,
+              frais_vente_unitaire: fraisVU,
             });
+
+            if (cessErr) {
+              return NextResponse.json({ error: "Erreur cession: " + cessErr.message }, { status: 500 });
+            }
 
             await supabase
               .from("lots_fifo")
@@ -153,7 +165,7 @@ export async function PUT(
       }
     }
 
-   return NextResponse.json({ success: true, debug: { mouvementId, newDate, newQuantite, newPrix, newFrais, titreId, dossierId } });
+    return NextResponse.json({ success: true });
   } catch (err: any) {
     return NextResponse.json(
       { error: err.message || "Erreur serveur" },
