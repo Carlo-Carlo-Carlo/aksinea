@@ -252,14 +252,15 @@ function MouvementsTab({ mouvements, formatCurrency, formatNumber, deleting, onD
           frais: parseFloat(editFrais) || 0,
         }),
       });
-      if (res.ok) {
-        window.location.reload();
+      const data = await res.json();
+      if (res.ok && data.success) {
+        alert("Mouvement modifié. La page va se recharger.");
+        window.location.href = window.location.href;
       } else {
-        const data = await res.json();
-        alert(data.error || "Erreur lors de la modification");
+        alert("Erreur : " + (data.error || JSON.stringify(data)));
       }
-    } catch {
-      alert("Erreur réseau");
+    } catch (err) {
+      alert("Erreur réseau : " + String(err));
     }
     setSaving(false);
   };
